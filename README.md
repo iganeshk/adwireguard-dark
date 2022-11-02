@@ -53,5 +53,5 @@ networks:
 
 ### Docker Images
 
-    + [Docker Hub](https://hub.docker.com/r/iganesh/adwireguard-dark)
-    + [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark)
+* [Docker Hub](https://hub.docker.com/r/iganesh/adwireguard-dark)
+* [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark)
