@@ -30,22 +30,37 @@ jobs:
         uses: 'actions/checkout@v3'
         with:
           repository: AdguardTeam/AdGuardHome
+          ref: master
           path: ${{ env.ADGUARDHOME_BUILD_PATH }}
           fetch-depth: 0
+
+      - name: 'Generate a Release Tag'
+        working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
+        id: build-version
+        run: |
+          latest_version=$( git -C "./" describe HEAD | sed 's|\(.*\)-.*|\1|' )
+          datetime_now="$( TZ=":America/Chicago" date '+%Y%m%d.%H%M' )CST"
+          echo "release_tag=${datetime_now}" >> $GITHUB_ENV
+          echo "release_name=${latest_version}-dark" >> $GITHUB_ENV
+          echo "build_date=$( date -u +'%Y-%m-%dT%H:%M:%SZ' )" >> $GITHUB_ENV
 
       - name: 'Fetch and Apply Dark Theme Patch'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
-          curl -o adguardhome-dark-mustard-theme.patch \
-          https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-dark-mustard-theme.patch
-          git apply adguardhome-dark-mustard-theme.patch
+          # curl -o adguardhome-dark-mustard-theme.patch \
+          # https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-dark-mustard-theme.patch
+          # git apply adguardhome-dark-mustard-theme.patch
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-dark-mustard-theme.patch \
+          | git apply -v
 
       - name: 'Fetch and Apply Build Scripts Patch'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
-          curl -o adguardhome-build-scripts.patch \
-          https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-build-scripts.patch
-          git apply adguardhome-build-scripts.patch
+          # curl -o adguardhome-build-scripts.patch \
+          # https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-build-scripts.patch
+          # git apply adguardhome-build-scripts.patch
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-build-scripts.patch \
+          | git apply -v
 
       - name: 'Set up Go'
         uses: 'actions/setup-go@v3'
@@ -82,16 +97,6 @@ jobs:
       - name: 'Set up Docker Buildx'
         uses: 'docker/setup-buildx-action@v2'
 
-      - name: 'Generate a Release Tag'
-        working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
-        id: build-version
-        run: |
-          latest_version=$( git -C "./" describe HEAD | sed 's|\(.*\)-.*|\1|' )
-          datetime_now="$( TZ=":America/Chicago" date '+%Y%m%d.%H%M' )CST"
-          echo "release_tag=${datetime_now}" >> $GITHUB_ENV
-          echo "release_name=${latest_version}-dark" >> $GITHUB_ENV
-          echo "build_date=$( date -u +'%Y-%m-%dT%H:%M:%SZ' )" >> $GITHUB_ENV
-
       - name: 'Build AdGuardHome Binaries'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
@@ -113,13 +118,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 'Checkout wg-easy (dark) personal Repository into distibutables directory'
-        uses: 'actions/checkout@v3'
-        with:
-          repository: iganeshk/wg-easy-dark
-          path: '${{ env.ADGUARDHOME_DIST_PATH }}/${{ env.WGEASY_REPO_DIR }}'
-          fetch-depth: 0
-
       # AGH's docker image build script
       #   - name: 'Build Docker Images'
       #   working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
@@ -130,6 +128,19 @@ jobs:
       #     GITHUB_IMAGE_NAME="${{ github.repository }}" \
       #     RELEASE_TAG="${{ env.release_tag }}" \
       #     build-docker
+
+      - name: 'Checkout wg-easy (dark) personal repo into distibutables directory'
+        uses: 'actions/checkout@v3'
+        with:
+          repository: iganeshk/wg-easy-dark
+          ref: production
+          path: '${{ env.ADGUARDHOME_DIST_PATH }}/${{ env.WGEASY_REPO_DIR }}'
+          fetch-depth: 0
+
+      - name: 'Apply Patches to wg-easy'
+        working-directory: '${{ env.ADGUARDHOME_DIST_PATH }}/${{ env.WGEASY_REPO_DIR }}'
+        run: |
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/wg-easy-dark-theme.patch | git apply -v
 
       - name: 'Fetch Dockerfile'
         working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
@@ -174,14 +185,14 @@ jobs:
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ env.release_tag }}
 
-      # - name: 'Publish Releases'
-      #   uses: 'ncipollo/release-action@v1'
-      #   with:
-      #     artifacts: "${{ env.ADGUARDHOME_BUILD_PATH}}/dist/*.tar.gz"
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     tag: ${{ env.release_tag }}
-      #     name: ${{ env.release_name }}
-      #     allowUpdates: true
+      - name: 'Publish Releases'
+        uses: 'ncipollo/release-action@v1'
+        with:
+          artifacts: "${{ env.ADGUARDHOME_BUILD_PATH}}/dist/*.tar.gz"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.release_tag }}
+          name: ${{ env.release_name }}
+          allowUpdates: true
 
   notify:
     needs:
