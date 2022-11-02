@@ -47,19 +47,13 @@ jobs:
       - name: 'Fetch and Apply Dark Theme Patch'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
-          # curl -o adguardhome-dark-mustard-theme.patch \
-          # https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-dark-mustard-theme.patch
-          # git apply adguardhome-dark-mustard-theme.patch
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-dark-mustard-theme.patch \
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.1/adguardhome/adguardhome-dark-mustard-theme.patch \
           | git apply -v
 
       - name: 'Fetch and Apply Build Scripts Patch'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
-          # curl -o adguardhome-build-scripts.patch \
-          # https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-build-scripts.patch
-          # git apply adguardhome-build-scripts.patch
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/adguardhome-build-scripts.patch \
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.1/adguardhome/adguardhome-build-scripts.patch \
           | git apply -v
 
       - name: 'Set up Go'
@@ -129,10 +123,10 @@ jobs:
       #     RELEASE_TAG="${{ env.release_tag }}" \
       #     build-docker
 
-      - name: 'Checkout wg-easy (dark) personal repo into distibutables directory'
+      - name: 'Checkout wg-easy (official) repo into adguardhome dist directory'
         uses: 'actions/checkout@v3'
         with:
-          repository: iganeshk/wg-easy-dark
+          repository: WeeJeWel/wg-easy
           ref: production
           path: '${{ env.ADGUARDHOME_DIST_PATH }}/${{ env.WGEASY_REPO_DIR }}'
           fetch-depth: 0
@@ -140,15 +134,16 @@ jobs:
       - name: 'Apply Patches to wg-easy'
         working-directory: '${{ env.ADGUARDHOME_DIST_PATH }}/${{ env.WGEASY_REPO_DIR }}'
         run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/wg-easy-dark-theme.patch | git apply -v
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.1/wg-easy/wg-easy-dark-theme.patch | git apply -v
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.1/wg-easy/wg-easy-node18.patch | git apply -v
 
       - name: 'Fetch Dockerfile'
         working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
         run: |
           rm -f ./Dockerfile
-          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/Dockerfile
+          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.1/Dockerfile
 
-      - name: 'Fetch entrypoint into wg-dark-src and prep dists for docker'
+      - name: 'Fetch Entrypoint and prep dists directory for docker'
         working-directory: '${{ env.ADGUARDHOME_DIST_PATH }}'
         run: |
           mkdir docker
@@ -156,7 +151,7 @@ jobs:
           cp "./AdGuardHome_linux_arm64/AdGuardHome/AdGuardHome" "./docker/AdGuardHome_linux_arm64_"
           cp "./AdGuardHome_linux_arm_6/AdGuardHome/AdGuardHome" "./docker/AdGuardHome_linux_arm_v6"
           cp "./AdGuardHome_linux_arm_7/AdGuardHome/AdGuardHome" "./docker/AdGuardHome_linux_arm_v7"
-          curl -o ./docker/entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.0/entrypoint.sh
+          curl -o ./docker/entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.1/entrypoint.sh
           cp -r '${{ env.WGEASY_REPO_DIR }}/src/' './docker/${{ env.WGEASY_BUILD_DIR }}'
 
       # Build & Publish
@@ -173,17 +168,17 @@ jobs:
           labels: |
             maintainer=${{ github.actor }}
             org.opencontainers.image.created=${{ env.build_date }}
-            org.opencontainers.image.description="AdWireGuard (AdGuard+WireGuard) Dark Themed"
-            org.opencontainers.image.licenses="GPL-3.0"
-            org.opencontainers.image.source="https://github/${{ github.repository }}"
-            org.opencontainers.image.title="AdWireGuard"
-            org.opencontainers.image.url="https://github/${{ github.repository }}"
+            org.opencontainers.image.description=AdWireGuard (AdGuard+WireGuard) Dark Themed
+            org.opencontainers.image.licenses=GPL-3.0
+            org.opencontainers.image.source=https://github/${{ github.repository }}
+            org.opencontainers.image.title=AdWireGuard
+            org.opencontainers.image.url=https://github/${{ github.repository }}
             org.opencontainers.image.version=${{ env.release_name }}
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_REPO }}:latest
             ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_REPO }}:${{ env.release_tag }}
-            ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ env.release_tag }}
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_REPO }}:latest
+            ghcr.io/${{ github.repository }}:latest
 
       - name: 'Publish Releases'
         uses: 'ncipollo/release-action@v1'
