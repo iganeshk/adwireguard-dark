@@ -38,7 +38,8 @@ jobs:
         working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
         id: build-version
         run: |
-          latest_version=$( git -C "./" describe HEAD | sed 's|\(.*\)-.*|\1|' )
+          # latest_version=$( git -C "./" describe HEAD | sed 's|\(.*\)-.*|\1|' )
+          latest_version=$( git -C "./" describe HEAD )
           datetime_now="$( TZ=":America/Chicago" date '+%Y%m%d.%H%M' )CST"
           echo "release_tag=${datetime_now}" >> $GITHUB_ENV
           echo "release_name=${latest_version}-dark" >> $GITHUB_ENV

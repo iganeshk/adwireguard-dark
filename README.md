@@ -1,4 +1,4 @@
-[AdGuard Home](https://github.com/iganeshk/AdGuardHome-Dark) and [wg-easy](https://github.com/iganeshk/wg-easy-dark) images built from sources with Dark theme (patches applied on build) for linux - amd64, arm64, arm6/7 platforms
+[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) and [wg-easy](https://github.com/WeeJeWel/wg-easy) images built from sources with Dark theme (patches applied on build) for linux - amd64, arm64, arm6/7 platforms
 
 This allows you monitor wireguard clients with adguard home, allowing to setup client specific configuration 
 
