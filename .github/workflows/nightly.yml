@@ -1,4 +1,4 @@
-name: 'Build Adguard with wg-easy images'
+name: 'Nightly Builds'
 
 env:
   DOCKER_REPO: 'adwireguard-dark'
@@ -12,14 +12,36 @@ env:
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-  pull_request:
+  schedule:
+    - cron: '0 10 * * *'
+    - cron: '0 22 * * *'
 
 jobs:
+  check-for-updates:
+    name: 'Check if codebase updated'
+    runs-on: ubuntu-latest
+    outputs:
+      updateAvailable: ${{ env.build_needed }}
+    steps:
+      - name: 'Check AdGuard Home Repository for Updates'
+        run: |
+          build_needed=0;
+          adguard_latest=$( git ls-remote --tags --refs --sort="v:refname" https://github.com/AdguardTeam/AdGuardHome.git | awk -F/ 'END{print$NF}' )
+          adwire_latest=$( curl -sL https://api.github.com/repos/iganeshk/adwireguard-dark/releases/latest | jq -r ".name" )
+          echo "AdGuardHome=${adguard_latest} vs AdWireGuard=${adwire_latest//-dark}"
+          if [ "$adwire_latest" == "null" ]
+          then
+            build_needed=1
+          else
+            curl -o ./semver2.sh -fsSL https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/semver2.sh
+            build_needed=$(bash ./semver2.sh ${adguard_latest} ${adwire_latest//-dark})
+          fi
+          echo "build_needed=${build_needed}" >> $GITHUB_ENV
+
   build-latest:
     runs-on: ubuntu-latest
+    needs: [check-for-updates]
+    if: ${{ needs.check-for-updates.outputs.updateAvailable == '1' }}
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@v3'
@@ -114,17 +136,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # AGH's docker image build script
-      #   - name: 'Build Docker Images'
-      #   working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
-      #   run: |
-      #     make WG_PATH="${{ env.WGEASY_BUILD_DIR }}" \
-      #     VERSION=${{ env.release_name }} BUILD_SNAP=0 SIGN=0 VERBOSE=1 OS="linux" ARCH="amd64 arm" SNAP=0 \
-      #     DOCKER_IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}" \
-      #     GITHUB_IMAGE_NAME="${{ github.repository }}" \
-      #     RELEASE_TAG="${{ env.release_tag }}" \
-      #     build-docker
-
       - name: 'Checkout wg-easy (official) repo into adguardhome dist directory'
         uses: 'actions/checkout@v3'
         with:
@@ -189,7 +200,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.release_tag }}
           name: ${{ env.release_name }}
-          allowUpdates: true
+          allowUpdates: false
 
   notify:
     needs:
