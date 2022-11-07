@@ -115,13 +115,6 @@ jobs:
       - name: 'Set up Docker Buildx'
         uses: 'docker/setup-buildx-action@v2'
 
-      - name: 'Build AdGuardHome Binaries'
-        working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
-        run: |
-          make VERSION=${{ env.release_name }} \
-          BUILD_SNAP=0 SIGN=0 VERBOSE=1 OS="linux" ARCH="amd64 arm arm64" SNAP=0 \
-          build-release
-
       # Login to docker and Github CR so build-docker can push images out
       - name: 'Login to DockerHub'
         uses: 'docker/login-action@v2'
@@ -135,6 +128,23 @@ jobs:
           registry: 'ghcr.io'
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete all containers from repository without tags
+        uses: Chizkiyahu/delete-untagged-ghcr-action@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          repository_owner: ${{ github.repository_owner }}
+          repository: ${{ github.repository }}
+          untagged_only: true
+          owner_type: user
+          except_untagged_multiplatform: true
+
+      - name: 'Build AdGuardHome Binaries'
+        working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
+        run: |
+          make VERSION=${{ env.release_name }} \
+          BUILD_SNAP=0 SIGN=0 VERBOSE=1 OS="linux" ARCH="amd64 arm arm64" SNAP=0 \
+          build-release
 
       - name: 'Checkout wg-easy (official) repo into adguardhome dist directory'
         uses: 'actions/checkout@v3'
