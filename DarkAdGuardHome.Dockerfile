@@ -8,7 +8,7 @@ ARG TARGETVARIANT
 RUN apk --no-cache add ca-certificates tzdata \
   	wget curl libcap bind-tools && \
   	mkdir -p /opt/adguardhome/conf /opt/adguardhome/work && \
-	chown -R nobody: /opt/adwireguard
+	chown -R nobody: /opt/adguardhome
 
 COPY --chown=nobody:nogroup\
 	${DIST_DIR}/AdGuardHome_${TARGETOS}_${TARGETARCH}_${TARGETVARIANT}\
