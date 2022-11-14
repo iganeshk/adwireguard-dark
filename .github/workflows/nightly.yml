@@ -32,10 +32,15 @@ jobs:
           if [ "$adwire_latest" == "null" ]
           then
             build_needed=1
-            echo "New AdGuardHome - ${adguard_latest} build anticipated!"
           else
             curl -o ./semver2.sh -fsSL https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/semver2.sh
             build_needed=$(bash ./semver2.sh ${adguard_latest} ${adwire_latest//-dark})
+          fi
+          if [ "$build_needed" == 1 ]
+          then
+            echo "New AdGuardHome - ${adguard_latest} build anticipated!"
+          else
+            echo "AdGuardHome - ${adwire_latest//-dark} is already latest!"
           fi
           echo "build_needed=${build_needed}" >> $GITHUB_ENV
 
@@ -43,5 +48,5 @@ jobs:
     name: 'Build AdGuardHome Nightly'
     needs: [check-for-updates]
     if: ${{ needs.check-for-updates.outputs.updateAvailable == '1' }}
-    uses: ./.github/workflows/build-adguardhome.yml
+    uses: ./.github/workflows/build.yml
     secrets: inherit

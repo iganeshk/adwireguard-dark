@@ -8,9 +8,9 @@
   <img src="https://raw.githubusercontent.com/iganeshk/adwireguard-dark/assets/screenshot-adwireguard.png?v1" width="800px" alt="AdWireGuard Screenshot" />
 </p>
 
-[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) and [wg-easy](https://github.com/WeeJeWel/wg-easy) images built from sources with Dark theme (patches applied on build) for linux - amd64, arm64 & arm6/7 platforms
+[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) and [wg-easy](https://github.com/WeeJeWel/wg-easy) built from sources with dark theme (patches applied on build) into a single docker images and standalone binaries (AdGuardHome) for linux - amd64, arm64 & arm6/7 platforms
 
-This allows you monitor wireguard clients with adguard home, allowing to setup client specific configuration 
+This [image](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark) should allow you to monitor wireguard clients within the AdGuardHome.
 
 *Note: On Android, make sure PrivateDNS is disabled to avoid DNS leaking*
 
