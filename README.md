@@ -1,8 +1,8 @@
 # AdWireGuard
 
-![Build AdguardHome Dark](https://github.com/iganeshk/adwireguard-dark/actions/workflows/build.yml/badge.svg)
-![Build AdguardHome Dark](https://github.com/iganeshk/adwireguard-dark/actions/workflows/nightly.yml/badge.svg)
-![Build & Docker Workflow](https://img.shields.io/github/v/release/iganeshk/adwireguard-dark.svg?include_prereleases)
+[![Build AdguardHome Dark](https://github.com/iganeshk/adwireguard-dark/actions/workflows/build.yml/badge.svg)](https://github.com/iganeshk/adwireguard-dark/actions/workflows/build.yml)
+[![Build AdguardHome Dark](https://github.com/iganeshk/adwireguard-dark/actions/workflows/nightly.yml/badge.svg)](https://github.com/iganeshk/adwireguard-dark/actions/workflows/nightly.yml)
+[![Build & Docker Workflow](https://img.shields.io/github/v/release/iganeshk/adwireguard-dark.svg?include_prereleases)](https://github.com/iganeshk/adwireguard-dark/releases)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/iganeshk/adwireguard-dark/assets/screenshot-adwireguard.png?v1" width="800px" alt="AdWireGuard Screenshot" />

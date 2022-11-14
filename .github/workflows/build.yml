@@ -329,8 +329,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ needs.build-latest.outputs.release_tag }}
             ghcr.io/${{ github.repository }}:latest
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_REPO }}:${{ needs.build-latest.outputs.release_tag }}
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_REPO }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.build-latest.outputs.release_tag }}
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
 
       - name: 'Delete all containers from package without tags'
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
