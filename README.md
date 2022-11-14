@@ -1,13 +1,34 @@
-[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) and [wg-easy](https://github.com/WeeJeWel/wg-easy) images built from sources with Dark theme (patches applied on build) for linux - amd64, arm64, arm6/7 platforms
+# AdWireGuard
+
+![Build AdguardHome Dark](https://github.com/iganeshk/adwireguard-dark/actions/workflows/build.yml/badge.svg)
+![Build AdguardHome Dark](https://github.com/iganeshk/adwireguard-dark/actions/workflows/nightly.yml/badge.svg)
+![Build & Docker Workflow](https://img.shields.io/github/v/release/iganeshk/adwireguard-dark.svg?include_prereleases)
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/iganeshk/adwireguard-dark/assets/screenshot-adwireguard.png?v1" width="800px" alt="AdWireGuard Screenshot" />
+</p>
+
+[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) and [wg-easy](https://github.com/WeeJeWel/wg-easy) images built from sources with Dark theme (patches applied on build) for linux - amd64, arm64 & arm6/7 platforms
 
 This allows you monitor wireguard clients with adguard home, allowing to setup client specific configuration 
 
-## Docker Images
+*Note: On Android, make sure PrivateDNS is disabled to avoid DNS leaking*
 
+## Docker Images & Releases
+
+#### AdWireGuard Dark (AdGuardHome + wg-easy)
 * [Docker Hub](https://hub.docker.com/r/iganesh/adwireguard-dark)
 * [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark)
 
-### Docker-Compose example:
+#### AdGuardHome Dark
+* [Docker Hub](https://hub.docker.com/r/iganesh/adwireguard-dark)
+* [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark)
+
+#### AdGuardHome Dark Binaries
+
+* [Releases](https://github.com/iganeshk/adwireguard-dark/releases)
+
+### Docker-Compose AdWireGuard:
 ```
 version: "3.8"
 
@@ -33,8 +54,8 @@ services:
       - WG_MTU=1420
     volumes:
         # adguard-home volume
-      - "./adguard/work:/opt/adwireguard/work"
-      - "./adguard/conf:/opt/adwireguard/conf"
+      - './adguard/work:/opt/adwireguard/work'
+      - './adguard/conf:/opt/adwireguard/conf'
         # wg-easy volume
       - './wireguard:/etc/wireguard'
     cap_add:
@@ -56,8 +77,3 @@ networks:
         - subnet: 10.10.10.0/24
 
 ```
-
-## AdGuardHome Dark Builds
-
-* [Releases](https://github.com/iganeshk/adwireguard-dark/releases)
-
