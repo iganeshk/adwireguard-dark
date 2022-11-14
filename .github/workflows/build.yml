@@ -51,9 +51,7 @@ jobs:
         id: build-version
         run: |
           # latest_version=$( git -C "./" describe HEAD | sed 's|\(.*\)-.*|\1|' )
-          latest_version=$( git -C "./" describe HEAD )
-          # datetime_now="$( TZ=":America/Chicago" date '+%Y%m%d.%H%M' )CST"
-          # echo "release_tag=${datetime_now}" >> $GITHUB_ENV
+          latest_version=$( git -C "./" describe HEAD --abbrev=0 )
           echo "release_tag=${latest_version}" >> $GITHUB_ENV
           echo "release_name=${latest_version}-dark" >> $GITHUB_ENV
           echo "build_date=$( date -u +'%Y-%m-%dT%H:%M:%SZ' )" >> $GITHUB_ENV
