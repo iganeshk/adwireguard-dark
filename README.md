@@ -21,8 +21,8 @@ This allows you monitor wireguard clients with adguard home, allowing to setup c
 * [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark)
 
 #### AdGuardHome Dark
-* [Docker Hub](https://hub.docker.com/r/iganesh/adwireguard-dark)
-* [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark)
+* [Docker Hub](https://hub.docker.com/r/iganesh/adguardhome-dark)
+* [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adguardhome-dark)
 
 #### AdGuardHome Dark Binaries
 
