@@ -1,0 +1,14 @@
+diff --git a/src/package.json b/src/package.json
+index 8f4d457..c7df17f 100644
+--- a/src/package.json
++++ b/src/package.json
+@@ -28,6 +28,6 @@
+     ]
+   },
+   "engines": {
+-    "node": "14"
++    "node": "18"
+   }
+-}
+\ No newline at end of file
++}
