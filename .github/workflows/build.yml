@@ -349,41 +349,14 @@ jobs:
       - name: 'Set up Docker Buildx'
         uses: 'docker/setup-buildx-action@v2'
 
-      - name: 'Restore AdGuardHome build from cache'
+      - name: 'Restore AdWireGuard Docker cache'
         uses: actions/cache@v3
         with:
-          key: ${{ needs.build-latest.outputs.artifact_name }}
-          path: ${{ needs.build-latest.outputs.adguard_dist_path }}
-
-      - name: 'Checkout wg-easy (official) repo into adguardhome dist directory'
-        uses: 'actions/checkout@v3'
-        with:
-          repository: WeeJeWel/wg-easy
-          ref: production
-          path: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
-          fetch-depth: 0
-
-      - name: 'Apply Patches to wg-easy'
-        working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
-        run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-dark-theme.patch | git apply -v
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-node18.patch | git apply -v
-
-      - name: 'Fetch AdWireGuard Dockerfile'
-        working-directory: ./
-        run: |
-          rm -f ./Dockerfile
-          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/AdWireGuard.Dockerfile
-
-      - name: 'Fetch Entrypoint and Prep for docker'
-        working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}'
-        run: |
-          # wkdir - ./adguardhome/dist/docker
-          curl -o ./entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/entrypoint.sh
-          cp -r '${{ env.WGEASY_REPO_DIR }}/src/' './${{ env.WGEASY_BUILD_DIR }}'
+          key: ${{ env.ADWIREGUARD_CACHE }}
+          path: ./
 
       # Build & Publish
-      - name: 'Build & Publish AdGuardHome Dark Docker Image'
+      - name: 'Dockerhub Publish - AdWireGuard'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -442,7 +415,7 @@ jobs:
       - name: 'Restore AdWireGuard Docker cache'
         uses: actions/cache@v3
         with:
-          key: adwireguard-docker-cache
+          key: ${{ env.ADWIREGUARD_CACHE }}
           path: ./
 
       - name: 'GithubCR ${{ matrix.arch }} Publish - AdWireGuard'
