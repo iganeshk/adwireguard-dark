@@ -377,7 +377,7 @@ jobs:
             org.opencontainers.image.url=https://github/${{ github.repository }}
             org.opencontainers.image.version=${{ needs.build-latest.outputs.release_name }}
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.build-latest.outputs.release_tag }}
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.adwireguard-docker-cache.outputs.release_tag }}
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
 
   # GithubCR workaround for manifest inssue by publishing individual architectures
