@@ -9,6 +9,7 @@ env:
   WGEASY_REPO_DIR: 'wg-dark'
   WGEASY_BUILD_DIR: 'wg-dark-src'
   BUILD_ARTIFACT: 'adguardhome-build'
+  ADWIREGUARD_CACHE: 'adwireguard-docker-cache'
   ADWIRE_IMAGE_REPO: 'adwireguard-dark'
   ADGUARD_IMAGE_REPO: 'adguardhome-dark'
 
@@ -25,11 +26,9 @@ jobs:
     name: 'Build AdGuardHome Latest'
     runs-on: ubuntu-latest
     outputs:
-      latest_version: ${{ env.latest_version }}
       release_tag: ${{ env.release_tag }}
       release_name: ${{ env.release_name }}
       build_date: ${{ env.build_date }}
-      runner_id: ${{ env.runner_id }}
       artifact_name: ${{ env.BUILD_ARTIFACT }}-${{ env.release_name }}
       adguard_dist_path: ${{ env.adguard_dist_path }}
 
@@ -58,47 +57,6 @@ jobs:
           echo "build_date=$( date -u +'%Y-%m-%dT%H:%M:%SZ' )" >> $GITHUB_ENV
           echo "adguard_dist_path=${{ env.ADGUARDHOME_DIST_PATH }}/docker" >> $GITHUB_ENV
 
-      - name: 'Fetch and Apply Dark Theme Patch'
-        working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
-        run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/adguardhome/adguardhome-dark-mustard-theme.patch \
-          | git apply -v
-
-      - name: 'Fetch and Apply Build Scripts Patch'
-        working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
-        run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/adguardhome/adguardhome-build-scripts.patch \
-          | git apply -v
-
-      - name: 'Set up Go'
-        uses: 'actions/setup-go@v3'
-        with:
-          go-version: '${{ env.GO_VERSION }}'
-
-      - name: 'Set up Node'
-        uses: 'actions/setup-node@v3'
-        with:
-          node-version: '${{ env.NODE_VERSION }}'
-
-      - name: 'Set up Go modules cache'
-        uses: 'actions/cache@v3'
-        with:
-          path: '~/go/pkg/mod'
-          key: "${{ runner.os }}-go-${{ hashFiles(format('{0}/go.sum', env.ADGUARDHOME_BUILD_PATH)) }}"
-          restore-keys: '${{ runner.os }}-go-'
-
-      - name: 'Get npm cache directory'
-        id: 'npm-cache'
-        run: |
-          echo "npm_cache_dir=$(npm config get cache)" >> $GITHUB_ENV
-
-      - name: 'Set up npm cache'
-        uses: 'actions/cache@v3'
-        with:
-          path: '${{ env.npm_cache_dir }}'
-          key: "${{ runner.os }}-node-${{ hashFiles(format('{0}/client/package-lock.json', env.ADGUARDHOME_BUILD_PATH)) }}"
-          restore-keys: '${{ runner.os }}-node-'
-
       - name: 'Check AdGuardHome existing build cache'
         id: check-build-cache
         uses: actions/cache@v3
@@ -106,9 +64,18 @@ jobs:
           path: ${{ env.ADGUARDHOME_DIST_PATH }}/docker
           key: ${{ env.BUILD_ARTIFACT }}-${{ env.release_name }}
 
+      - name: 'Existing Build Cache Found? ${{ steps.check-build-cache.outputs.cache-hit }}'
+        run: |
+          if [ ${{ steps.check-build-cache.outputs.cache-hit }} ]
+          then
+            echo "Skipping build, existing cache found"
+          else
+            echo "No build cache found, building latest"
+          fi
+
       - name: 'Clear Old AdGuardHome build cache'
-        uses: actions/github-script@v6
         if: steps.check-build-cache.outputs.cache-hit != 'true'
+        uses: actions/github-script@v6
         with:
           script: |
             const caches = await github.rest.actions.getActionsCacheList({
@@ -129,6 +96,54 @@ jobs:
             } else {
               console.log("no ${{ env.BUILD_ARTIFACT }} caches cleared")
             }
+
+      - name: 'Fetch and Apply Dark Theme Patch'
+        if: steps.check-build-cache.outputs.cache-hit != 'true'
+        working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
+        run: |
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/adguardhome/adguardhome-dark-mustard-theme.patch \
+          | git apply -v
+
+      - name: 'Fetch and Apply Build Scripts Patch'
+        if: steps.check-build-cache.outputs.cache-hit != 'true'
+        working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
+        run: |
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/adguardhome/adguardhome-build-scripts.patch \
+          | git apply -v
+
+      - name: 'Set up Go'
+        if: steps.check-build-cache.outputs.cache-hit != 'true'
+        uses: 'actions/setup-go@v3'
+        with:
+          go-version: '${{ env.GO_VERSION }}'
+
+      - name: 'Set up Node'
+        if: steps.check-build-cache.outputs.cache-hit != 'true'
+        uses: 'actions/setup-node@v3'
+        with:
+          node-version: '${{ env.NODE_VERSION }}'
+
+      - name: 'Set up Go modules cache'
+        if: steps.check-build-cache.outputs.cache-hit != 'true'
+        uses: 'actions/cache@v3'
+        with:
+          path: '~/go/pkg/mod'
+          key: "${{ runner.os }}-go-${{ hashFiles(format('{0}/go.sum', env.ADGUARDHOME_BUILD_PATH)) }}"
+          restore-keys: '${{ runner.os }}-go-'
+
+      - name: 'Get npm cache directory'
+        if: steps.check-build-cache.outputs.cache-hit != 'true'
+        id: 'npm-cache'
+        run: |
+          echo "npm_cache_dir=$(npm config get cache)" >> $GITHUB_ENV
+
+      - name: 'Set up npm cache'
+        if: steps.check-build-cache.outputs.cache-hit != 'true'
+        uses: 'actions/cache@v3'
+        with:
+          path: '${{ env.npm_cache_dir }}'
+          key: "${{ runner.os }}-node-${{ hashFiles(format('{0}/client/package-lock.json', env.ADGUARDHOME_BUILD_PATH)) }}"
+          restore-keys: '${{ runner.os }}-node-'
 
       - name: 'Build AdGuardHome Binaries'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
@@ -201,18 +216,7 @@ jobs:
         working-directory: ./
         run: |
           rm -f ./Dockerfile
-          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/DarkAdGuardHome.Dockerfile
-
-      # AGH's docker image build script
-      #   - name: 'Build Docker Images'
-      #   working-directory: ${{ env.ADGUARDHOME_BUILD_PATH }}
-      #   run: |
-      #     make WG_PATH="${{ env.WGEASY_BUILD_DIR }}" \
-      #     VERSION=${{ env.release_name }} BUILD_SNAP=0 SIGN=0 VERBOSE=1 OS="linux" ARCH="amd64 arm" SNAP=0 \
-      #     DOCKER_IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}" \
-      #     GITHUB_IMAGE_NAME="${{ github.repository }}" \
-      #     RELEASE_TAG="${{ env.release_tag }}" \
-      #     build-docker
+          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/DarkAdGuardHome.Dockerfile
 
       - name: 'Build & Publish AdGuardHome Dark Docker Image'
         uses: docker/build-push-action@v3
@@ -248,24 +252,96 @@ jobs:
           untagged_only: true
           owner_type: user
 
-  build-docker-adwireguard:
-    name: 'Docker Build AdWireGuard (Dark)'
+  adwireguard-docker-cache:
+    name: 'Prep AdWireGuard Docker'
     needs: [build-latest]
     runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ env.release_tag }}
+      release_name: ${{ env.release_name }}
+      build_date: ${{ env.build_date }}
+      artifact_name: ${{ env.BUILD_ARTIFACT }}-${{ env.release_name }}
+      adguard_dist_path: ${{ env.adguard_dist_path }}
     steps:
-      # Login to docker and Github CR so build-docker can push images out
+      - name: 'Reciprocate env vars for dependednt jobs'
+        run: |
+          echo "release_tag=${{ needs.build-latest.outputs.release_tag }}" >> $GITHUB_ENV
+          echo "release_name=${{ needs.build-latest.outputs.release_name }}" >> $GITHUB_ENV
+          echo "build_date=${{ needs.build-latest.outputs.build_date }}" >> $GITHUB_ENV
+          echo "adguard_dist_path=${{ needs.build-latest.outputs.adguard_dist_path }}" >> $GITHUB_ENV
+      - name: 'Clear all old AdWireGuard caches'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const caches = await github.rest.actions.getActionsCacheList({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              key: '${{ env.ADWIREGUARD_CACHE }}',
+            })
+            if (caches.data != null && caches.data.total_count > 0) {
+              console.log("Found %d ${{ env.ADWIREGUARD_CACHE }} caches", caches.data.total_count)
+              for (const cache of caches.data.actions_caches) {
+                console.log("Deleting cache=%s with cacheId=%d", cache.key, cache.id)
+                github.rest.actions.deleteActionsCacheById({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  cache_id: cache.id,
+                })
+              }
+            } else {
+              console.log("no ${{ env.ADWIREGUARD_CACHE }} caches found to be cleared")
+            }
+
+      - name: 'Restore AdGuardHome Builds from cache'
+        uses: actions/cache@v3
+        with:
+          key: ${{ needs.build-latest.outputs.artifact_name }}
+          path: ${{ needs.build-latest.outputs.adguard_dist_path }}
+
+      - name: 'Checkout wg-easy (official) repo into adguardhome dist directory'
+        uses: 'actions/checkout@v3'
+        with:
+          repository: WeeJeWel/wg-easy
+          ref: production
+          path: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
+          fetch-depth: 0
+
+      - name: 'Apply Patches to wg-easy'
+        working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
+        run: |
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-dark-theme.patch | git apply -v
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-node18.patch | git apply -v
+
+      - name: 'Fetch AdWireGuard Dockerfile'
+        working-directory: ./
+        run: |
+          rm -f ./Dockerfile
+          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/AdWireGuard.Dockerfile
+
+      - name: 'Fetch Entrypoint and Prep for docker'
+        working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}'
+        run: |
+          # working directory - ./adguardhome/dist/docker
+          curl -o ./entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/entrypoint.sh
+          cp -r '${{ env.WGEASY_REPO_DIR }}/src/' './${{ env.WGEASY_BUILD_DIR }}'
+
+      - name: 'Temporarily Cache AdWireGuard'
+        uses: actions/cache@v3
+        with:
+          path: ./
+          key: ${{ env.ADWIREGUARD_CACHE }}
+          restore-keys: ${{ env.ADWIREGUARD_CACHE }}-
+
+  build-adwireguard-dockerhub:
+    name: 'DockerHub Build AdWireGuard'
+    needs: [adwireguard-docker-cache]
+    runs-on: ubuntu-latest
+    steps:
       - name: 'Login to DockerHub'
         uses: 'docker/login-action@v2'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: 'Log in to the Github Container registry'
-        uses: 'docker/login-action@v2'
-        with:
-          registry: 'ghcr.io'
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Set up QEMU'
         uses: 'docker/setup-qemu-action@v2'
@@ -290,20 +366,20 @@ jobs:
       - name: 'Apply Patches to wg-easy'
         working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
         run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/wg-easy/wg-easy-dark-theme.patch | git apply -v
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/wg-easy/wg-easy-node18.patch | git apply -v
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-dark-theme.patch | git apply -v
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-node18.patch | git apply -v
 
       - name: 'Fetch AdWireGuard Dockerfile'
         working-directory: ./
         run: |
           rm -f ./Dockerfile
-          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/AdWireGuard.Dockerfile
+          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/AdWireGuard.Dockerfile
 
       - name: 'Fetch Entrypoint and Prep for docker'
         working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}'
         run: |
           # wkdir - ./adguardhome/dist/docker
-          curl -o ./entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/entrypoint.sh
+          curl -o ./entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/entrypoint.sh
           cp -r '${{ env.WGEASY_REPO_DIR }}/src/' './${{ env.WGEASY_BUILD_DIR }}'
 
       # Build & Publish
@@ -328,12 +404,77 @@ jobs:
             org.opencontainers.image.url=https://github/${{ github.repository }}
             org.opencontainers.image.version=${{ needs.build-latest.outputs.release_name }}
           tags: |
-            ghcr.io/${{ github.repository }}:${{ needs.build-latest.outputs.release_tag }}
-            ghcr.io/${{ github.repository }}:latest
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.build-latest.outputs.release_tag }}
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
 
-      - name: 'Delete all containers from package without tags'
+  # GithubCR workaround for manifest inssue by publishing individual architectures
+  build-adwireguard-ghcr:
+    name: 'GithubCR Build (${{ matrix.tag }})'
+    needs: [adwireguard-docker-cache]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: linux/arm/v6
+            tag: armv6
+          - arch: linux/arm/v7
+            tag: armv7
+          - arch: linux/arm64
+            tag: arm64
+          - arch: linux/amd64
+            tag: amd64
+    steps:
+      # Login to Github CR so build-docker can push images out
+      - name: 'Log in to the Github Container registry'
+        uses: 'docker/login-action@v2'
+        with:
+          registry: 'ghcr.io'
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Set up QEMU'
+        uses: 'docker/setup-qemu-action@v2'
+
+      - name: 'Set up Docker Buildx'
+        uses: 'docker/setup-buildx-action@v2'
+
+      - name: 'Restore AdWireGuard Docker cache'
+        uses: actions/cache@v3
+        with:
+          key: adwireguard-docker-cache
+          path: ./
+
+      - name: 'GithubCR ${{ matrix.arch }} Publish - AdWireGuard'
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          outputs: type=image
+          platforms: ${{ matrix.arch }}
+          build-args: |
+              DIST_DIR=${{ needs.adwireguard-docker-cache.outputs.adguard_dist_path }}
+              WG_PATH=${{ env.WGEASY_BUILD_DIR }}
+          labels: |
+            maintainer=${{ github.actor }}
+            org.opencontainers.image.created=${{ needs.adwireguard-docker-cache.outputs.build_date }}
+            org.opencontainers.image.description=AdWireGuard Dark (AdGuard+WireGuard) (${{ needs.adwireguard-docker-cache.outputs.release_name }})
+            org.opencontainers.image.licenses=GPL-3.0
+            org.opencontainers.image.source=https://github/${{ github.repository }}
+            org.opencontainers.image.title=AdWireGuard Dark
+            org.opencontainers.image.url=https://github/${{ github.repository }}
+            org.opencontainers.image.version=${{ needs.adwireguard-docker-cache.outputs.release_name }}
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ matrix.tag }}
+            ghcr.io/${{ github.repository }}:${{ matrix.tag }}-${{ needs.adwireguard-docker-cache.outputs.release_tag }}
+
+  cleanup-untagged-containes:
+    name: 'Cleanup GHCR untagged images'
+    needs: [build-adwireguard-ghcr]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Delete all images without tags'
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
           token: ${{ secrets.PAT_TOKEN }}
