@@ -365,17 +365,17 @@ jobs:
           outputs: type=image
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           build-args: |
-              DIST_DIR=${{ needs.build-latest.outputs.adguard_dist_path }}
+              DIST_DIR=${{ needs.adwireguard-docker-cache.outputs.adguard_dist_path }}
               WG_PATH=${{ env.WGEASY_BUILD_DIR }}
           labels: |
             maintainer=${{ github.actor }}
-            org.opencontainers.image.created=${{ needs.build-latest.outputs.build_date }}
-            org.opencontainers.image.description=AdWireGuard Dark (AdGuard+WireGuard) (${{ needs.build-latest.outputs.release_name }})
+            org.opencontainers.image.created=${{ needs.adwireguard-docker-cache.outputs.build_date }}
+            org.opencontainers.image.description=AdWireGuard Dark (AdGuard+WireGuard) (${{ needs.adwireguard-docker-cache.outputs.release_name }})
             org.opencontainers.image.licenses=GPL-3.0
             org.opencontainers.image.source=https://github/${{ github.repository }}
             org.opencontainers.image.title=AdWireGuard Dark
             org.opencontainers.image.url=https://github/${{ github.repository }}
-            org.opencontainers.image.version=${{ needs.build-latest.outputs.release_name }}
+            org.opencontainers.image.version=${{ needs.adwireguard-docker-cache.outputs.release_name }}
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.adwireguard-docker-cache.outputs.release_tag }}
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
