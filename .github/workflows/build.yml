@@ -263,7 +263,7 @@ jobs:
       artifact_name: ${{ env.BUILD_ARTIFACT }}-${{ env.release_name }}
       adguard_dist_path: ${{ env.adguard_dist_path }}
     steps:
-      - name: 'Reciprocate env vars for dependednt jobs'
+      - name: 'Reciprocate env vars for dependent jobs'
         run: |
           echo "release_tag=${{ needs.build-latest.outputs.release_tag }}" >> $GITHUB_ENV
           echo "release_name=${{ needs.build-latest.outputs.release_name }}" >> $GITHUB_ENV
