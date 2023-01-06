@@ -246,7 +246,7 @@ jobs:
       - name: 'Delete all containers from package without tags'
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.PKG_MGR_TOKEN }}
           repository_owner: ${{ github.repository_owner }}
           package_name: ${{ env.ADGUARD_IMAGE_REPO }}
           untagged_only: true
@@ -450,7 +450,7 @@ jobs:
       - name: 'Delete all images without tags'
         uses: Chizkiyahu/delete-untagged-ghcr-action@v2
         with:
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.PKG_MGR_TOKEN }}
           repository_owner: ${{ github.repository_owner }}
           repository: ${{ github.repository }}
           package_name: ${{ env.ADWIRE_IMAGE_REPO }}
