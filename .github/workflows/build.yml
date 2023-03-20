@@ -101,14 +101,14 @@ jobs:
         if: steps.check-build-cache.outputs.cache-hit != 'true'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/adguardhome/adguardhome-dark-mustard-theme.patch \
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.4/adguardhome/adguardhome-dark-mustard-theme.patch \
           | git apply -v
 
       - name: 'Fetch and Apply Build Scripts Patch'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/adguardhome/adguardhome-build-scripts.patch \
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.4/adguardhome/adguardhome-build-scripts.patch \
           | git apply -v
 
       - name: 'Set up Go'
@@ -216,7 +216,7 @@ jobs:
         working-directory: ./
         run: |
           rm -f ./Dockerfile
-          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/DarkAdGuardHome.Dockerfile
+          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.4/DarkAdGuardHome.Dockerfile
 
       - name: 'Build & Publish AdGuardHome Dark Docker Image'
         uses: docker/build-push-action@v3
@@ -309,20 +309,20 @@ jobs:
       - name: 'Apply Patches to wg-easy'
         working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
         run: |
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-dark-theme.patch | git apply -v
-          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/wg-easy/wg-easy-node18.patch | git apply -v
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.4/wg-easy/wg-easy-dark-theme.patch | git apply -v
+          curl https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.4/wg-easy/wg-easy-node18.patch | git apply -v
 
       - name: 'Fetch AdWireGuard Dockerfile'
         working-directory: ./
         run: |
           rm -f ./Dockerfile
-          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/AdWireGuard.Dockerfile
+          curl -o ./Dockerfile https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.4/AdWireGuard.Dockerfile
 
       - name: 'Fetch Entrypoint and Prep for docker'
         working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}'
         run: |
           # working directory - ./adguardhome/dist/docker
-          curl -o ./entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.3/entrypoint.sh
+          curl -o ./entrypoint.sh https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.4/entrypoint.sh
           cp -r '${{ env.WGEASY_REPO_DIR }}/src/' './${{ env.WGEASY_BUILD_DIR }}'
 
       - name: 'Temporarily Cache AdWireGuard'
