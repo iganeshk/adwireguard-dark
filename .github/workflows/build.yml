@@ -494,11 +494,11 @@ jobs:
     #
     # Use always() to signal to the runner that this job must run even if the
     # previous ones failed.
-    if: ${{ failure() }}
+    if: ${{ ${{ job.status }} != 'success' }}
     steps:
       - name: 'Notify over Telegram'
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: ${{ github.job }} (${{ github.repository }}) has ${{ job.status }}
+          message: ${{ github.repository }}:${{ github.job }} has ${{ job.status }}
