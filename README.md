@@ -37,9 +37,9 @@ services:
     container_name: adwireguard
     # image: ghcr.io/iganeshk/adwireguard-dark:latest
     image: iganesh/adwireguard-dark:latest
-    restart: unless-stopped
+    restart: always
     ports:
-      - '53:53'           # AdGuardHome DNS Port
+      - '53:53/udp'           # AdGuardHome DNS Port
       - '3000:3000'       # Default Address AdGuardHome WebUI
       - '853:853'         # DNS-TLS
       - '51820:51820/udp' # wiregaurd port
