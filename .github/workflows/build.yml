@@ -494,7 +494,7 @@ jobs:
     #
     # Use always() to signal to the runner that this job must run even if the
     # previous ones failed.
-    if: ${{ job.status != 'success' }}
+    if: job.status != 'success'
     steps:
       - name: 'Notify over Telegram'
         uses: appleboy/telegram-action@master
