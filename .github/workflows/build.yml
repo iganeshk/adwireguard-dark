@@ -462,18 +462,19 @@ jobs:
     needs: [build-latest]
     # Secrets are not passed to workflows that are triggered by a pull request
     # from a fork.
-    #
+    # https://docs.github.com/en/actions/learn-github-actions/expressions#status-check-functions
     # Use always() to signal to the runner that this job must run even if the
     # previous ones failed.
-    'if':
-      ${{
-        always() &&
-        github.repository_owner == 'iganeshk' &&
-        (
-          github.event_name == 'push' ||
-          github.event.pull_request.head.repo.full_name == github.repository
-        )
-      }}
+    # 'if':
+    #   ${{
+    #     always() &&
+    #     github.repository_owner == 'iganeshk' &&
+    #     (
+    #       github.event_name == 'push' ||
+    #       github.event.pull_request.head.repo.full_name == github.repository
+    #     )
+    #   }}
+    if: ${{ success() }}
     steps:
       - name: 'Notify over Telegram'
         uses: appleboy/telegram-action@master
