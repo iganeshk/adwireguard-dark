@@ -490,12 +490,7 @@ jobs:
   notify-on-fail:
     runs-on: ubuntu-latest
     needs: [build-latest]
-    # Secrets are not passed to workflows that are triggered by a pull request
-    # from a fork.
-    #
-    # Use always() to signal to the runner that this job must run even if the
-    # previous ones failed.
-    if: job.status != 'success'
+    if: ${{ failure() }}
     steps:
       - name: 'Notify over Telegram'
         uses: appleboy/telegram-action@master
