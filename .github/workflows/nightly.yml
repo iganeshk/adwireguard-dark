@@ -1,15 +1,5 @@
 name: 'Nightly Builds'
 
-env:
-  DOCKER_REPO: 'adwireguard-dark'
-  GO_VERSION: '1.18.7'
-  NODE_VERSION: '14'
-  ADGUARDHOME_BUILD_PATH: './adguardhome'
-  ADGUARDHOME_DIST_PATH: './adguardhome/dist'
-  ADGUARDHOME_DOCKERFILE_PATH: './adguardhome/scripts/make'
-  WGEASY_REPO_DIR: 'wg-dark'
-  WGEASY_BUILD_DIR: 'wg-dark-src'
-
 on:
   workflow_dispatch:
   schedule:
