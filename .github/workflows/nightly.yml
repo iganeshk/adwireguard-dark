@@ -3,10 +3,8 @@ name: 'Nightly Builds'
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 5 * * *'
     - cron: '0 10 * * *'
-    - cron: '0 15 * * *'
-    - cron: '0 22 * * *'
+    - cron: '0 20 * * *'
 
 jobs:
   check-for-updates:

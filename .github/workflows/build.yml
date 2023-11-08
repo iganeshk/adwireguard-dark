@@ -98,12 +98,12 @@ jobs:
               console.log("no ${{ env.BUILD_ARTIFACT }} caches cleared")
             }
 
-      - name: 'Fetch and Apply Dark Theme Patch'
-        if: steps.check-build-cache.outputs.cache-hit != 'true'
-        working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
-        run: |
-          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/adguardhome-dark-mustard-theme.patch" \
-          | git apply -v
+      # - name: 'Fetch and Apply Dark Theme Patch'
+      #   if: steps.check-build-cache.outputs.cache-hit != 'true'
+      #   working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
+      #   run: |
+      #     curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/adguardhome-dark-mustard-theme.patch" \
+      #     | git apply -v
 
       - name: 'Fetch and Apply Build Scripts Patch'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
@@ -499,4 +499,4 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: ${{ github.repository }}:${{ github.job }} has ${{ job.status }}
+          message: ${{ github.repository }} (${{ github.workflow }}) is failing!
