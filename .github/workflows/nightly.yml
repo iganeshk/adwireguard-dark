@@ -23,7 +23,7 @@ jobs:
           then
             build_needed=1
           else
-            curl -o ./semver2.sh -fsSL https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/patch-1.2/semver2.sh
+            curl -o ./semver2.sh -fsSL https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/assets/semver2.sh
             build_needed=$(bash ./semver2.sh ${adguard_latest} ${adwire_latest//-dark})
           fi
           if [ "$build_needed" == 1 ]
