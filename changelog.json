@@ -1,0 +1,14 @@
+{
+  "1": "Initial version. Enjoy!",
+  "2": "You can now rename a client, and update the address. Enjoy!",
+  "3": "Many improvements and small changes. Enjoy!",
+  "4": "Now with pretty charts for client's network speed. Enjoy!",
+  "5": "Many small improvements & feature requests. Enjoy!",
+  "6": "Many small performance improvements & bug fixes. Enjoy!",
+  "7": "Added dark mode, improved the look & performance of the upload/download chart",
+  "8": "Updated NodeJS to v18, updated Node modules, improved layout on mobile devices & linting fixes.",
+  "9": "Updated NodeJS to v18.14.1 and bump node dependencies, both by @pheiduck in #17 and #18.",
+  "10": "Updated NodeJS to v18.15.0 (@pheiduck) and bump node dependencies.",
+  "11": "Updated NodeJS to v18.18.2, bump node dependencies & add ability to adjust WebUI host/port (@rahilarious).",
+  "12": "Bumped node dependencies & fix build error caused by reference to node v14."
+}
