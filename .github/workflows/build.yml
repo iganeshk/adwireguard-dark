@@ -2,7 +2,7 @@
 name: 'Build AdguardHome Dark'
 
 env:
-  PATCH_VERSION: 'patch-1.5.7'
+  PATCH_VERSION: 'patch-1.5.7-1'
   GO_VERSION: '1.20.10'
   NODE_VERSION: '16'
   ADGUARDHOME_BUILD_PATH: './adguardhome'
