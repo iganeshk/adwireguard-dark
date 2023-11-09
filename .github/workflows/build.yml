@@ -2,7 +2,7 @@
 name: 'Build AdguardHome Dark'
 
 env:
-  PATCH_VERSION: 'patch-1.5.5-1'
+  PATCH_VERSION: 'patch-1.5.5-2'
   GO_VERSION: '1.20.10'
   NODE_VERSION: '16'
   ADGUARDHOME_BUILD_PATH: './adguardhome'
@@ -314,7 +314,7 @@ jobs:
           echo "applying dark-theme patch to wg-easy"
           curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dark-theme.patch" | git apply --whitespace=nowarn -v
           echo "applying dependency vulnerabilities patch to wg-easy"
-          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dependency.patch" | git apply --whitespace=nowarn -v
+          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dependencies.patch" | git apply --whitespace=nowarn -v
 
       - name: 'Fetch AdWireGuard Dockerfile'
         working-directory: ./
