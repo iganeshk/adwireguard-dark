@@ -103,14 +103,14 @@ jobs:
       #   working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
       #   run: |
       #     curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/must-orange-dark.patch" \
-      #     | git apply -v
+      #     | git apply --whitespace=nowarn -v
 
       - name: 'Fetch and Apply Build Scripts Patch'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
           curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/build-scripts.patch" \
-          | git apply -v
+          | git apply --whitespace=nowarn -v
 
       - name: 'Set up Go'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
@@ -311,8 +311,10 @@ jobs:
       - name: 'Apply Patches to wg-easy'
         working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
         run: |
-          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dark-theme.patch" | git apply -v
-          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dependency.patch" | git apply -v
+          echo "applying dark-theme patch to wg-easy"
+          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dark-theme.patch" | git apply --whitespace=nowarn -v
+          echo "applying dependency vulnerabilities patch to wg-easy"
+          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dependency.patch" | git apply --whitespace=nowarn -v
 
       - name: 'Fetch AdWireGuard Dockerfile'
         working-directory: ./
