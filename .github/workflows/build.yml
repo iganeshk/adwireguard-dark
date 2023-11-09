@@ -2,7 +2,7 @@
 name: 'Build AdguardHome Dark'
 
 env:
-  PATCH_VERSION: 'patch-1.5.4'
+  PATCH_VERSION: 'patch-1.5.5'
   GO_VERSION: '1.20.10'
   NODE_VERSION: '16'
   ADGUARDHOME_BUILD_PATH: './adguardhome'
@@ -102,14 +102,14 @@ jobs:
       #   if: steps.check-build-cache.outputs.cache-hit != 'true'
       #   working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
       #   run: |
-      #     curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/adguardhome-dark-mustard-theme.patch" \
+      #     curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/must-orange-dark.patch" \
       #     | git apply -v
 
       - name: 'Fetch and Apply Build Scripts Patch'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
         working-directory: '${{ env.ADGUARDHOME_BUILD_PATH }}'
         run: |
-          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/adguardhome-build-scripts.patch" \
+          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/adguardhome/build-scripts.patch" \
           | git apply -v
 
       - name: 'Set up Go'
@@ -311,8 +311,8 @@ jobs:
       - name: 'Apply Patches to wg-easy'
         working-directory: '${{ needs.build-latest.outputs.adguard_dist_path }}/${{ env.WGEASY_REPO_DIR }}'
         run: |
-          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/wg-easy-dark-theme.patch" | git apply -v
-          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/wg-easy-node18.patch" | git apply -v
+          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/dark-theme.patch" | git apply -v
+          curl "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/wg-easy/security.patch" | git apply -v
 
       - name: 'Fetch AdWireGuard Dockerfile'
         working-directory: ./
