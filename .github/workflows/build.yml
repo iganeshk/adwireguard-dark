@@ -35,12 +35,12 @@ jobs:
 
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4.1.1'
         with:
           fetch-depth: 0
 
       - name: 'Checkout AdguardHome Official Repository'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4.1.1'
         with:
           repository: AdguardTeam/AdGuardHome
           ref: master
@@ -60,7 +60,7 @@ jobs:
 
       - name: 'Check AdGuardHome existing build cache'
         id: check-build-cache
-        uses: actions/cache@v3
+        uses: 'actions/cache@v3.3.2'
         with:
           path: ${{ env.ADGUARDHOME_DIST_PATH }}/docker
           key: ${{ env.BUILD_ARTIFACT }}-${{ env.release_name }}
@@ -76,7 +76,7 @@ jobs:
 
       - name: 'Clear Old AdGuardHome build cache'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
-        uses: actions/github-script@v6
+        uses: 'actions/github-script@v6'
         with:
           script: |
             const caches = await github.rest.actions.getActionsCacheList({
@@ -126,7 +126,7 @@ jobs:
 
       - name: 'Set up Go modules cache'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
-        uses: 'actions/cache@v3'
+        uses: 'actions/cache@v3.3.2'
         with:
           path: '~/go/pkg/mod'
           key: "${{ runner.os }}-go-${{ hashFiles(format('{0}/go.sum', env.ADGUARDHOME_BUILD_PATH)) }}"
@@ -140,7 +140,7 @@ jobs:
 
       - name: 'Set up npm cache'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
-        uses: 'actions/cache@v3'
+        uses: 'actions/cache@v3.3.2'
         with:
           path: '${{ env.npm_cache_dir }}'
           key: "${{ runner.os }}-node-${{ hashFiles(format('{0}/client/package-lock.json', env.ADGUARDHOME_BUILD_PATH)) }}"
@@ -166,7 +166,7 @@ jobs:
 
       - name: 'Cache AdGuardHome Builds'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
-        uses: actions/cache@v3
+        uses: 'actions/cache@v3.3.2'
         with:
           path: ${{ env.ADGUARDHOME_DIST_PATH }}/docker
           key: ${{ env.BUILD_ARTIFACT }}-${{ env.release_name }}
@@ -174,7 +174,7 @@ jobs:
 
       - name: 'Publish Releases'
         if: steps.check-build-cache.outputs.cache-hit != 'true'
-        uses: 'ncipollo/release-action@v1'
+        uses: 'ncipollo/release-action@v1.13.0'
         with:
           artifacts: "${{ env.ADGUARDHOME_BUILD_PATH}}/dist/*.tar.gz"
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -189,26 +189,26 @@ jobs:
     steps:
       # Login to docker and Github CR so build-docker can push images out
       - name: 'Login to DockerHub'
-        uses: 'docker/login-action@v2'
+        uses: 'docker/login-action@v3'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: 'Log in to the Github Container registry'
-        uses: 'docker/login-action@v2'
+        uses: 'docker/login-action@v3'
         with:
           registry: 'ghcr.io'
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Set up QEMU'
-        uses: 'docker/setup-qemu-action@v2'
+        uses: 'docker/setup-qemu-action@v3'
 
       - name: 'Set up Docker Buildx'
-        uses: 'docker/setup-buildx-action@v2'
+        uses: 'docker/setup-buildx-action@v3'
 
       - name: 'Restore AdGuardHome Builds from cache'
-        uses: actions/cache@v3
+        uses: actions/cache@v3.3.2
         with:
           key: ${{ needs.build-latest.outputs.artifact_name }}
           path: ${{ needs.build-latest.outputs.adguard_dist_path }}
@@ -246,7 +246,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADGUARD_IMAGE_REPO }}:latest
 
       - name: 'Delete all containers from package without tags'
-        uses: Chizkiyahu/delete-untagged-ghcr-action@v2
+        uses: Chizkiyahu/delete-untagged-ghcr-action@v3.2.0
         with:
           token: ${{ secrets.PKG_MGR_TOKEN }}
           repository_owner: ${{ github.repository_owner }}
@@ -295,13 +295,13 @@ jobs:
             }
 
       - name: 'Restore AdGuardHome Builds from cache'
-        uses: actions/cache@v3
+        uses: actions/cache@v3.3.2
         with:
           key: ${{ needs.build-latest.outputs.artifact_name }}
           path: ${{ needs.build-latest.outputs.adguard_dist_path }}
 
       - name: 'Checkout wg-easy (official) repo into adguardhome dist directory'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@v4.1.1'
         with:
           repository: WeeJeWel/wg-easy
           ref: production
@@ -330,7 +330,7 @@ jobs:
           cp -r '${{ env.WGEASY_REPO_DIR }}/src/' './${{ env.WGEASY_BUILD_DIR }}'
 
       - name: 'Temporarily Cache AdWireGuard'
-        uses: actions/cache@v3
+        uses: actions/cache@v3.3.2
         with:
           path: ./
           key: ${{ env.ADWIREGUARD_CACHE }}
@@ -342,25 +342,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Login to DockerHub'
-        uses: 'docker/login-action@v2'
+        uses: 'docker/login-action@v3'
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: 'Set up QEMU'
-        uses: 'docker/setup-qemu-action@v2'
+        uses: 'docker/setup-qemu-action@v3'
 
       - name: 'Set up Docker Buildx'
-        uses: 'docker/setup-buildx-action@v2'
+        uses: 'docker/setup-buildx-action@v3'
 
       - name: 'Restore AdWireGuard Docker cache'
-        uses: actions/cache@v3
+        uses: actions/cache@v3.3.2
         with:
           key: ${{ env.ADWIREGUARD_CACHE }}
           path: ./
 
       # Build & Publish
-      - name: 'Build & Publish Docker - AdWireGuard'
+      - name: 'Build & Publish Dockerhub - AdWireGuard'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -381,8 +381,6 @@ jobs:
             org.opencontainers.image.url=https://github/${{ github.repository }}
             org.opencontainers.image.version=${{ needs.adwireguard-docker-cache.outputs.release_name }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.adwireguard-docker-cache.outputs.release_tag }}
-            ghcr.io/${{ github.repository_owner }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.adwireguard-docker-cache.outputs.release_tag }}
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
 
@@ -406,20 +404,20 @@ jobs:
     steps:
       # Login to Github CR so build-docker can push images out
       - name: 'Log in to the Github Container registry'
-        uses: 'docker/login-action@v2'
+        uses: 'docker/login-action@v3'
         with:
           registry: 'ghcr.io'
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Set up QEMU'
-        uses: 'docker/setup-qemu-action@v2'
+        uses: 'docker/setup-qemu-action@v3'
 
       - name: 'Set up Docker Buildx'
-        uses: 'docker/setup-buildx-action@v2'
+        uses: 'docker/setup-buildx-action@v3'
 
       - name: 'Restore AdWireGuard Docker cache'
-        uses: actions/cache@v3
+        uses: actions/cache@v3.3.2
         with:
           key: ${{ env.ADWIREGUARD_CACHE }}
           path: ./
@@ -454,7 +452,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Delete all images without tags'
-        uses: Chizkiyahu/delete-untagged-ghcr-action@v2
+        uses: Chizkiyahu/delete-untagged-ghcr-action@v3.2.0
         with:
           token: ${{ secrets.PKG_MGR_TOKEN }}
           repository_owner: ${{ github.repository_owner }}
