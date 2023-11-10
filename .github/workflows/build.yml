@@ -443,6 +443,7 @@ jobs:
             org.opencontainers.image.url=https://github/${{ github.repository }}
             org.opencontainers.image.version=${{ needs.adwireguard-docker-cache.outputs.release_name }}
           tags: |
+            ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ matrix.tag }}
             ghcr.io/${{ github.repository }}:${{ matrix.tag }}-${{ needs.adwireguard-docker-cache.outputs.release_tag }}
 
