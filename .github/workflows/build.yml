@@ -2,7 +2,7 @@
 name: 'Build AdguardHome Dark'
 
 env:
-  PATCH_VERSION: 'patch-1.5.7-1'
+  PATCH_VERSION: 'patch-1.5.7-2'
   GO_VERSION: '1.20.10'
   NODE_VERSION: '16'
   ADGUARDHOME_BUILD_PATH: './adguardhome'
@@ -220,8 +220,8 @@ jobs:
           curl -o ./Dockerfile "https://raw.githubusercontent.com/iganeshk/AdWireGuard-Dark/${{ env.PATCH_VERSION }}/DarkAdGuardHome.Dockerfile"
 
 
-      - name: 'Build & Publish AdGuardHome Dark Docker Image'
-        uses: docker/build-push-action@v3
+      - name: 'Build & Publish Docker - AdGuardHome Dark'
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
@@ -360,8 +360,8 @@ jobs:
           path: ./
 
       # Build & Publish
-      - name: 'Dockerhub Publish - AdWireGuard'
-        uses: docker/build-push-action@v3
+      - name: 'Build & Publish Docker - AdWireGuard'
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
@@ -381,6 +381,8 @@ jobs:
             org.opencontainers.image.url=https://github/${{ github.repository }}
             org.opencontainers.image.version=${{ needs.adwireguard-docker-cache.outputs.release_name }}
           tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.adwireguard-docker-cache.outputs.release_tag }}
+            ghcr.io/${{ github.repository_owner }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:${{ needs.adwireguard-docker-cache.outputs.release_tag }}
             ${{ secrets.DOCKER_USERNAME }}/${{ env.ADWIRE_IMAGE_REPO }}:latest
 
