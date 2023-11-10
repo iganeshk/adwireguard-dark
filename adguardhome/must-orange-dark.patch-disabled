@@ -1,0 +1,579 @@
+diff --git a/client/src/components/App/index.js b/client/src/components/App/index.js
+index d59f985f..622e9ef1 100644
+--- a/client/src/components/App/index.js
++++ b/client/src/components/App/index.js
+@@ -5,6 +5,7 @@ import { hot } from 'react-hot-loader/root';
+ 
+ import 'react-table/react-table.css';
+ import '../ui/Tabler.css';
++import '../ui/Tabler-Dark.css';
+ import '../ui/ReactTable.css';
+ import './index.css';
+ 
+@@ -14,8 +15,8 @@ import propTypes from 'prop-types';
+ import Toasts from '../Toasts';
+ import Footer from '../ui/Footer';
+ import Status from '../ui/Status';
+-import UpdateTopline from '../ui/UpdateTopline';
+-import UpdateOverlay from '../ui/UpdateOverlay';
++// import UpdateTopline from '../ui/UpdateTopline';
++// import UpdateOverlay from '../ui/UpdateOverlay';
+ import EncryptionTopline from '../ui/EncryptionTopline';
+ import Icons from '../ui/Icons';
+ import i18n from '../../i18n';
+@@ -113,7 +114,7 @@ const App = () => {
+     const {
+         language,
+         isCoreRunning,
+-        isUpdateAvailable,
++        // isUpdateAvailable,
+         processing,
+         theme,
+     } = useSelector((state) => state.dashboard, shallowEqual);
+@@ -122,7 +123,7 @@ const App = () => {
+         state,
+     ) => state.encryption, shallowEqual);
+ 
+-    const updateAvailable = isCoreRunning && isUpdateAvailable;
++    // const updateAvailable = isCoreRunning && isUpdateAvailable;
+ 
+     useEffect(() => {
+         dispatch(getDnsStatus());
+@@ -184,10 +185,10 @@ const App = () => {
+     };
+ 
+     return <HashRouter hashType="noslash">
+-        {updateAvailable && <>
++        {/* {updateAvailable && <>
+             <UpdateTopline />
+             <UpdateOverlay />
+-        </>}
++        </>} */}
+         {!processingEncryption && <EncryptionTopline />}
+         <LoadingBar className="loading-bar" updateTime={1000} />
+         <Header />
+diff --git a/client/src/components/Dashboard/index.js b/client/src/components/Dashboard/index.js
+index 54354979..831c8db0 100644
+--- a/client/src/components/Dashboard/index.js
++++ b/client/src/components/Dashboard/index.js
+@@ -57,7 +57,7 @@ const Dashboard = ({
+     };
+ 
+     const buttonClass = classNames('btn btn-sm dashboard-protection-button', {
+-        'btn-gray': protectionEnabled,
++        'btn-outline-danger': protectionEnabled,
+         'btn-success': !protectionEnabled,
+     });
+ 
+diff --git a/client/src/components/Header/index.js b/client/src/components/Header/index.js
+index 554ec603..1bd85e68 100644
+--- a/client/src/components/Header/index.js
++++ b/client/src/components/Header/index.js
+@@ -4,7 +4,7 @@ import { shallowEqual, useSelector } from 'react-redux';
+ import { useTranslation } from 'react-i18next';
+ import classnames from 'classnames';
+ import Menu from './Menu';
+-import logo from '../ui/svg/logo.svg';
++import logo from '../ui/svg/logo-dark-ui.svg';
+ import './Header.css';
+ 
+ const Header = () => {
+diff --git a/client/src/components/ui/Tabler-Dark.css b/client/src/components/ui/Tabler-Dark.css
+new file mode 100644
+index 00000000..ea034c48
+--- /dev/null
++++ b/client/src/components/ui/Tabler-Dark.css
+@@ -0,0 +1,412 @@
++/* Dark Mustard Theme - AdGuardHome */
++
++body {
++    color: #ef952e !important;
++    background-color: #040301 !important;
++}
++
++a:hover {
++    color: #467fcf !important;
++}
++
++.form-control {
++    color: #969696 !important;
++    background-color: rgba(19, 19, 22, 0.8) !important;
++}
++
++.form-control:focus {
++    color: #fff !important;
++    background-color: rgba(19, 19, 22, 0.8) !important;
++}
++
++.form-control[readonly] {
++    background-color: rgba(31, 31, 35, 0.8) !important;
++}
++
++.form-control--search {
++    color: #ef952e !important;
++}
++
++.btn-success {
++    background-color: rgba(239, 149, 46, 0.41) !important;
++    border-color: rgba(239, 149, 46, 0.41);
++}
++
++.btn-success:hover {
++    background-color: #cc740f !important;
++    border-color: rgba(239, 149, 46, 0.41) !important;
++}
++
++.btn-success:active {
++    color: #fff;
++    background-color: #cc740f !important;
++    border-color: rgba(239, 149, 46, 0.41) !important;
++}
++
++.button-action--unblock {
++    background: #287331;
++}
++
++.btn-success:focus,
++.btn-success.focus {
++    box-shadow: 0 0 0 2px rgba(239, 149, 46, 0.41) !important;
++}
++
++.btn-success.disabled,
++.btn-success:disabled {
++    background-color: rgba(239, 149, 46, 0.41) !important;
++    border-color: rgba(239, 149, 46, 0.41) !important;
++}
++
++.btn-outline-secondary {
++    color: #ef952e !important;
++    background-color: #121212 !important;
++    border-color: rgba(239, 149, 46, 0.41) !important;
++}
++
++.btn-outline-secondary:hover {
++    background-color: #ef952e !important;
++    border-color: #cc740f !important;
++}
++
++.btn-outline-danger {
++    background-color: #121212 !important;
++}
++
++.dropdown-menu {
++    background-color: #171717 !important;
++}
++
++.dropdown-item {
++    color: #ef952e !important;
++    background-color: #171717 !important;
++}
++
++.dropdown-item:focus {
++    color: #171717 !important;
++    background-color: #be6c0e !important;
++}
++
++.dropdown-item:active {
++    color: #fff !important;
++    text-decoration: none !important;
++    background-color: #467fcf !important;
++}
++
++.dropdown-item:hover {
++    color: #171717 !important;
++    background-color: #ef952e !important;
++}
++
++.dropdown-menu-arrow:after {
++    border-bottom: 5px solid #ef952e !important;
++}
++
++/* Dark Radio Buttons*/
++
++.custom-control-input + .custom-control-label::before {
++    background-color: #1d1d1d !important;
++    border-radius: 10px !important;
++    border: solid #ef952e !important;
++    border-width: 2px !important;
++}
++
++.custom-control-input:checked + .custom-control-label::after {
++    background-color: #ef952e !important;
++    border-radius: 10px !important;
++    border: solid #ef952e !important;
++    border-width: 2px !important;
++}
++
++.custom-select {
++    -webkit-appearance: none !important;
++    -moz-appearance: none !important;
++    appearance: none !important;
++    color: #eee !important;
++    background: #222 url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMCA1Jz48cGF0aCBmaWxsPScjOTk5JyBkPSdNMCAwTDEwIDBMNSA1TDAgMCcvPjwvc3ZnPg==") no-repeat !important;
++    background-size: 0.75rem !important;
++    background-position: 95% 50% !important;
++}
++
++.basic-multi-select div {
++    color: #ef952e !important;
++    background: #1b1b1b !important;
++}
++
++.card {
++    background-color: rgba(31, 31, 35, 0.8) !important;
++}
++
++.modal-content {
++    background-color: #1d1d1d !important;
++}
++
++.modal-header {
++    border-bottom: 1px solid #3d3d3d !important;
++}
++
++.modal-footer {
++    border-top: 1px solid #3d3d3d !important;
++}
++
++.pr-1 {
++    content: url("data:image/svg+xml,%3Csvg version='1.1' id='Layer_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='164px' height='41px' viewBox='0 0 164 41' enable-background='new 0 0 164 41' xml:space='preserve'%3E%3Cg%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' fill='%23ef952e' d='M130,22l-1.2-2.9H123l-1.1,2.9H118l6.3-15h3.5l6.2,15H130z M126,11l-1.9,5.1h3.8L126,11z M117,16.1c0,0.9-0.2,1.7-0.5,2.4c-0.3,0.7-0.7,1.3-1.3,1.9c-0.6,0.5-1.3,0.9-2.1,1.2 c-0.8,0.3-1.7,0.4-2.7,0.4c-1,0-1.9-0.1-2.7-0.4c-0.8-0.3-1.5-0.7-2-1.2c-0.6-0.5-1-1.2-1.3-1.9c-0.3-0.7-0.4-1.5-0.4-2.4V7h3.6 v8.8c0,0.4,0.1,0.8,0.2,1.1c0.1,0.4,0.3,0.7,0.5,1c0.2,0.3,0.5,0.5,0.9,0.7s0.8,0.2,1.3,0.2s1-0.1,1.3-0.2c0.4-0.2,0.7-0.4,0.9-0.7 c0.2-0.3,0.4-0.6,0.5-1s0.2-0.7,0.2-1.1V7h3.7V16.1L117,16.1z M101,20.8c-0.7,0.4-1.6,0.7-2.6,0.9s-2,0.3-3.2,0.3 c-1.2,0-2.3-0.2-3.3-0.5c-1-0.4-1.9-0.9-2.6-1.5c-0.7-0.7-1.3-1.5-1.7-2.4c-0.4-0.9-0.6-1.9-0.6-3.1c0-1.1,0.2-2.2,0.6-3.1 c0.4-0.9,1-1.7,1.7-2.4c0.8-0.7,1.6-1.2,2.6-1.5C92.9,7.2,94,7,95.1,7c1.2,0,2.3,0.2,3.3,0.5c1,0.3,1.8,0.8,2.5,1.4l-2.3,2.5 c-0.4-0.4-0.8-0.7-1.4-1c-0.6-0.2-1.2-0.4-2-0.4c-0.6,0-1.2,0.1-1.8,0.3c-0.5,0.2-1,0.5-1.4,0.9c-0.4,0.4-0.7,0.9-0.9,1.4 c-0.2,0.6-0.3,1.2-0.3,1.8c0,0.7,0.1,1.3,0.3,1.8s0.5,1,0.9,1.4c0.4,0.4,0.9,0.7,1.4,0.9c0.6,0.2,1.2,0.3,2,0.3 c0.4,0,0.8,0,1.2-0.1c0.4-0.1,0.7-0.2,1.1-0.3V16h-2.9v-2.8h6.2V20.8L101,20.8z M164,14.5c0,1.3-0.2,2.4-0.7,3.4 c-0.5,0.9-1.1,1.7-1.9,2.4c-0.8,0.6-1.7,1.1-2.7,1.4c-1,0.3-2,0.4-3.1,0.4H150V7h5.4c1.1,0,2.1,0.1,3.1,0.4c1,0.2,1.9,0.6,2.8,1.2 c0.8,0.6,1.5,1.3,1.9,2.3C163.8,11.9,164,13,164,14.5L164,14.5z M160.2,14.5c0-0.8-0.1-1.6-0.4-2.1c-0.3-0.5-0.6-1-1.1-1.3 c-0.5-0.3-1-0.6-1.6-0.7c-0.6-0.1-1.2-0.2-1.8-0.2h-1.8v8.8h1.7c0.6,0,1.3-0.1,1.9-0.2c0.6-0.1,1.1-0.4,1.6-0.7 c0.5-0.4,0.8-0.8,1.1-1.4C160.1,16,160.2,15.3,160.2,14.5L160.2,14.5z M85,14.5c0,1.3-0.2,2.4-0.7,3.4c-0.5,0.9-1.1,1.7-1.9,2.4 c-0.8,0.6-1.7,1.1-2.7,1.4c-1,0.3-2,0.4-3.1,0.4H71V7h5.4c1.1,0,2.1,0.1,3.1,0.4c1,0.2,1.9,0.6,2.8,1.2c0.8,0.6,1.5,1.3,1.9,2.3 C84.8,11.9,85,13,85,14.5L85,14.5z M81.2,14.5c0-0.8-0.1-1.6-0.4-2.1c-0.3-0.5-0.6-1-1.1-1.3c-0.5-0.3-1-0.6-1.6-0.7 c-0.6-0.1-1.2-0.2-1.8-0.2h-1.8v8.8h1.7c0.7,0,1.3-0.1,1.9-0.2c0.6-0.1,1.1-0.4,1.6-0.7c0.5-0.4,0.8-0.8,1.1-1.4 C81.1,16,81.2,15.3,81.2,14.5z M66,22l-1.2-2.9H59L57.9,22H54l6.3-15h3.5L70,22H66z M62,11l-1.9,5.1h3.8L62,11z M143.9,22l-3.2-6 h-1.2v6H136V7h5.6c0.7,0,1.4,0.1,2.1,0.2c0.7,0.1,1.3,0.4,1.8,0.8c0.5,0.4,1,0.8,1.3,1.4c0.3,0.6,0.5,1.3,0.5,2.2 c0,1-0.3,1.9-0.8,2.6c-0.5,0.7-1.3,1.2-2.2,1.5L148,22H143.9z M143.7,11.6c0-0.4-0.1-0.6-0.2-0.9c-0.1-0.2-0.3-0.4-0.6-0.5 c-0.2-0.1-0.5-0.2-0.8-0.2c-0.3,0-0.5-0.1-0.8-0.1h-1.9v3.5h1.7c0.3,0,0.6,0,0.9-0.1s0.6-0.1,0.8-0.3c0.2-0.1,0.5-0.3,0.6-0.6 C143.6,12.3,143.7,12,143.7,11.6z M55,37.9v-8.7h1V33h4.9v-3.9h1v8.7h-1v-3.9H56v3.9L55,37.9L55,37.9z M68.1,38 c-2.6,0-4.3-2.1-4.3-4.5c0-2.4,1.7-4.5,4.3-4.5c2.6,0,4.3,2.1,4.3,4.5C72.4,35.9,70.6,38,68.1,38z M68.1,37.1 c1.9,0,3.3-1.6,3.3-3.6c0-2-1.4-3.6-3.3-3.6c-1.9,0-3.3,1.6-3.3,3.6C64.8,35.5,66.2,37.1,68.1,37.1z M74.4,37.9v-8.7h1l3.1,4.7 l3.1-4.7h1v8.7h-1v-7l-3.1,4.7h0l-3.1-4.6v7H74.4L74.4,37.9z M84.8,37.9v-8.7h6.1V30h-5.1v3h4.6v0.9h-4.6v3H91v0.9 C91,37.9,84.8,37.9,84.8,37.9z'/%3E%3Cpath fill='%23ef952e' d='M2.8,14c0.8,4.3,2.3,8.3,4.7,12.1c3,4.7,7.2,8.8,13,12.3c5.8-3.5,10-7.7,13-12.3c2.4-3.8,3.9-7.9,4.7-12.1 c0.5-2.7,0.6-4.8,0.7-8c-5.5-2.5-12.2-3.9-18.3-3.9C14.4,2.1,7.6,3.5,2.2,6C2.2,9.2,2.3,11.3,2.8,14L2.8,14z M20.5,0 C26.9,0,34.6,1.5,41,4.7c0,7,0.1,24.4-20.5,36.3C-0.1,29.1,0,11.7,0,4.7C6.4,1.5,14.1,0,20.5,0z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' fill='%23ef952e' d='M20.2,27L33,11.3c-0.9-0.7-1.8-0.2-2.2,0.2l0,0L20.1,21.6l-4-4.4 c-1.9-2-4.5-0.5-5.1-0.1L20.2,27'/%3E%3C/g%3E%3C/svg%3E") !important;
++    background-image: none !important;
++    width: 140px !important;
++    height: 31px !important;
++    margin-right: 0.5px !important;
++}
++
++.header {
++    background: #171717 !important;
++}
++
++.footer {
++    background-color: #040301 !important;
++    color: #ef952e !important;
++}
++
++.btn-secondary {
++    color: #fff !important;
++    background-color: rgba(239, 149, 46, 0.41);
++    border-color: rgba(239, 149, 46, 0.41);
++}
++
++.btn-secondary:hover {
++    color: #fff !important;
++    background-color: #cc740f !important;
++}
++
++.btn-gray {
++    background-color: #3b3e41 !important;
++    border-color: #464b51 !important;
++}
++
++.card-table tr td,.card-table tr th {
++    border-color: #262626 !important;
++}
++
++/* Dark Toggle Indicators */
++
++.custom-switch-indicator {
++    background: #7a7a7a !important;
++    border: 1px solid #7a7a7a !important;
++}
++
++.custom-switch-indicator:before {
++    background: #2d2d2d !important;
++}
++
++.custom-switch-input:checked~.custom-switch-indicator {
++    background: #ef952e !important;
++    border: 1px solid #ef952e !important;
++}
++
++.counters__row {
++    border-top: 1px solid #373737 !important;
++}
++
++/* Tabler - React Components Patch */
++.card-table .logs__text--nowrap {
++    color: #ef952e !important;
++}
++
++.card-table .logs__text, .logs__row .list-unstyled li {
++    color: #ef952e !important;
++}
++
++.logs__row--white {
++    background-color: inherit !important;
++}
++
++.logs__row--blue {
++    background-color: #011722 !important;
++}
++
++.logs__table {
++    background-color: #171717 !important;
++}
++
++.detailed-info {
++    color: #888888 !important;
++}
++
++.icon--selected {
++    background-color: #171717 !important;
++    border: solid 1px #333 !important;
++}
++
++.ReactTable .-pagination .-pageInfo {
++    border: 1px solid #333 !important;
++}
++
++.ReactTable .-pagination .-btn {
++    border: 1px solid #333 !important;
++}
++
++.tooltip-custom__container {
++    background-color: #171717 !important;
++}
++
++small, .small {
++    color: #ef952e !important;
++}
++
++.logs__text, .logs__row .list-unstyled li {
++    color: #4a4a4a !important;
++}
++
++.ReactTable .rt-noData {
++    background-image: initial !important;
++    background-color: rgba(24, 26, 27, 0.8) !important;
++    color: rgba(232, 230, 227, 0.5) !important;
++}
++
++.ReactTable .-pagination input, .ReactTable .-pagination .-btn, .ReactTable .-pagination select, .ReactTable .rt-thead.-filters input,.ReactTable .rt-thead.-filters select {
++    background-color: #222 !important;
++    color: #eee !important;
++}
++
++.ReactTable .-loading {
++    background-color: rgba(0, 0, 0, 0.8) !important;
++}
++
++.ReactModal__Overlay {
++    background-color: rgba(0, 0, 0, 0.4) !important;
++}
++
++.ReactModal__Overlay--after-open {
++    opacity: 1;
++    background-color: rgba(0, 0, 0, 0.65) !important;
++    transition: opacity 150ms ease-out;
++}
++
++.ReactTable .-pagination select {
++    -webkit-appearance: none !important;
++    -moz-appearance: none !important;
++    appearance: none !important;
++    padding-right: 25px !important;
++    background: #2d2d2d url("data:image/svg+xml;utf8,<svg viewBox='0 0 140 140' width='15' height='24' xmlns='http://www.w3.org/2000/svg'><g><path d='m121.3,34.6c-1.6-1.6-4.2-1.6-5.8,0l-51,51.1-51.1-51.1c-1.6-1.6-4.2-1.6-5.8,0-1.6,1.6-1.6,4.2 0,5.8l53.9,53.9c0.8,0.8 1.8,1.2 2.9,1.2 1,0 2.1-0.4 2.9-1.2l53.9-53.9c1.7-1.6 1.7-4.2 0.1-5.8z' fill='white'/></g></svg>") no-repeat !important;
++    background-position: right 10px top 55% !important;
++}
++
++.ReactModal__Content--after-open {
++    border: 1px solid rgb(70, 70, 70) !important;
++    background: rgb(10, 10, 10) none repeat scroll 0% 0% !important;
++}
++
++/* Tabler - Elements Patch */
++
++.setup__container {
++    background-color: rgba(31, 31, 35, 0.8) !important;
++}
++
++.rt-tr-group .red {
++    background-color: #482020 !important;
++}
++
++.rt-tr-group .green {
++    background-color: #204623 !important;
++}
++
++.rt-tr-group .blue {
++    background-color: #202946 !important;
++}
++
++.card .red {
++    background-color: #482020 !important;
++}
++
++.card .green {
++    background-color: #204623 !important;
++}
++
++.card .blue {
++    background-color: #202946 !important;
++}
++
++.dropdown-item.active,
++.dropdown-item:active {
++    background-color: #ef952e !important;
++    color: #000 !important;
++}
++
++.dropdown-menu {
++    cursor: default;
++}
++
++.nav-tabs .nav-link.active {
++    border-color: #ef952e !important;
++    color: #ef952e !important;
++    background: transparent !important;
++}
++
++.nav-tabs .nav-link.active:hover {
++    border-color: #ef952e !important;
++    color: #ef952e !important;
++}
++
++.mobile-menu {
++    background-color: #171717 !important;
++}
++
++.nav-tabs .nav-item.show .nav-link {
++    color: #be6c0e !important;
++    background-color: #171717 !important;
++    border-bottom-color: #ef952e !important;
++}
++
++.card-body--loading:before {
++    background-color: rgba(0, 0, 0, 0.8) !important;
++}
++
++.tooltip-custom--logs {
++    background-color: transparent !important;
++}
++
++.loading:before {
++    background-color: rgba(0, 0, 0, 0.8) !important;
++}
++
++/* Dark checkbox */
++
++.checkbox__input + .checkbox__label:before {
++    background-color: #1d1d1d !important;
++    border-radius: 2px !important;
++    border: solid #ef952e !important;
++    border-width: 2px !important;
++}
++
++.checkbox__input:checked + .checkbox__label:before {
++    background-color: #ef952e !important;
++}
++
++.checkbox__label-subtitle {
++    color: rgba(107, 107, 107, 0.9) !important;
++}
++
++.form__desc {
++    color: rgba(107, 107, 107, 0.9) !important;
++}
++
++.tabs__controls {
++    border-bottom: 1px solid #3d3d3d !important;
++}
++
++.tab__control {
++    color: #467fcf !important;
++}
++
++.tab__control--active {
++    color: #467fcf !important;
++}
++
++.service {
++    background-color: rgba(31, 31, 35, 0.8) !important;
++    border: 1px solid rgba(31, 31, 35, 0.8) !important;
++    border-color: #1f1f1f !important;
++}
++
++.service__icon {
++    color: #7a7a7a !important;
++}
+diff --git a/client/src/components/ui/svg/logo-dark-ui.svg b/client/src/components/ui/svg/logo-dark-ui.svg
+new file mode 100644
+index 00000000..6dac754a
+--- /dev/null
++++ b/client/src/components/ui/svg/logo-dark-ui.svg
+@@ -0,0 +1,37 @@
++<?xml version="1.0" encoding="utf-8"?>
++<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
++	 width="164px" height="41px" viewBox="0 0 164 41" enable-background="new 0 0 164 41" xml:space="preserve">
++<g>
++	<path fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" d="M130,22l-1.2-2.9H123l-1.1,2.9H118l6.3-15h3.5l6.2,15H130z
++		 M126,11l-1.9,5.1h3.8L126,11z M117,16.1c0,0.9-0.2,1.7-0.5,2.4c-0.3,0.7-0.7,1.3-1.3,1.9c-0.6,0.5-1.3,0.9-2.1,1.2
++		c-0.8,0.3-1.7,0.4-2.7,0.4c-1,0-1.9-0.1-2.7-0.4c-0.8-0.3-1.5-0.7-2-1.2c-0.6-0.5-1-1.2-1.3-1.9c-0.3-0.7-0.4-1.5-0.4-2.4V7h3.6
++		v8.8c0,0.4,0.1,0.8,0.2,1.1c0.1,0.4,0.3,0.7,0.5,1c0.2,0.3,0.5,0.5,0.9,0.7s0.8,0.2,1.3,0.2s1-0.1,1.3-0.2c0.4-0.2,0.7-0.4,0.9-0.7
++		c0.2-0.3,0.4-0.6,0.5-1s0.2-0.7,0.2-1.1V7h3.7V16.1L117,16.1z M101,20.8c-0.7,0.4-1.6,0.7-2.6,0.9s-2,0.3-3.2,0.3
++		c-1.2,0-2.3-0.2-3.3-0.5c-1-0.4-1.9-0.9-2.6-1.5c-0.7-0.7-1.3-1.5-1.7-2.4c-0.4-0.9-0.6-1.9-0.6-3.1c0-1.1,0.2-2.2,0.6-3.1
++		c0.4-0.9,1-1.7,1.7-2.4c0.8-0.7,1.6-1.2,2.6-1.5C92.9,7.2,94,7,95.1,7c1.2,0,2.3,0.2,3.3,0.5c1,0.3,1.8,0.8,2.5,1.4l-2.3,2.5
++		c-0.4-0.4-0.8-0.7-1.4-1c-0.6-0.2-1.2-0.4-2-0.4c-0.6,0-1.2,0.1-1.8,0.3c-0.5,0.2-1,0.5-1.4,0.9c-0.4,0.4-0.7,0.9-0.9,1.4
++		c-0.2,0.6-0.3,1.2-0.3,1.8c0,0.7,0.1,1.3,0.3,1.8s0.5,1,0.9,1.4c0.4,0.4,0.9,0.7,1.4,0.9c0.6,0.2,1.2,0.3,2,0.3
++		c0.4,0,0.8,0,1.2-0.1c0.4-0.1,0.7-0.2,1.1-0.3V16h-2.9v-2.8h6.2V20.8L101,20.8z M164,14.5c0,1.3-0.2,2.4-0.7,3.4
++		c-0.5,0.9-1.1,1.7-1.9,2.4c-0.8,0.6-1.7,1.1-2.7,1.4c-1,0.3-2,0.4-3.1,0.4H150V7h5.4c1.1,0,2.1,0.1,3.1,0.4c1,0.2,1.9,0.6,2.8,1.2
++		c0.8,0.6,1.5,1.3,1.9,2.3C163.8,11.9,164,13,164,14.5L164,14.5z M160.2,14.5c0-0.8-0.1-1.6-0.4-2.1c-0.3-0.5-0.6-1-1.1-1.3
++		c-0.5-0.3-1-0.6-1.6-0.7c-0.6-0.1-1.2-0.2-1.8-0.2h-1.8v8.8h1.7c0.6,0,1.3-0.1,1.9-0.2c0.6-0.1,1.1-0.4,1.6-0.7
++		c0.5-0.4,0.8-0.8,1.1-1.4C160.1,16,160.2,15.3,160.2,14.5L160.2,14.5z M85,14.5c0,1.3-0.2,2.4-0.7,3.4c-0.5,0.9-1.1,1.7-1.9,2.4
++		c-0.8,0.6-1.7,1.1-2.7,1.4c-1,0.3-2,0.4-3.1,0.4H71V7h5.4c1.1,0,2.1,0.1,3.1,0.4c1,0.2,1.9,0.6,2.8,1.2c0.8,0.6,1.5,1.3,1.9,2.3
++		C84.8,11.9,85,13,85,14.5L85,14.5z M81.2,14.5c0-0.8-0.1-1.6-0.4-2.1c-0.3-0.5-0.6-1-1.1-1.3c-0.5-0.3-1-0.6-1.6-0.7
++		c-0.6-0.1-1.2-0.2-1.8-0.2h-1.8v8.8h1.7c0.7,0,1.3-0.1,1.9-0.2c0.6-0.1,1.1-0.4,1.6-0.7c0.5-0.4,0.8-0.8,1.1-1.4
++		C81.1,16,81.2,15.3,81.2,14.5z M66,22l-1.2-2.9H59L57.9,22H54l6.3-15h3.5L70,22H66z M62,11l-1.9,5.1h3.8L62,11z M143.9,22l-3.2-6
++		h-1.2v6H136V7h5.6c0.7,0,1.4,0.1,2.1,0.2c0.7,0.1,1.3,0.4,1.8,0.8c0.5,0.4,1,0.8,1.3,1.4c0.3,0.6,0.5,1.3,0.5,2.2
++		c0,1-0.3,1.9-0.8,2.6c-0.5,0.7-1.3,1.2-2.2,1.5L148,22H143.9z M143.7,11.6c0-0.4-0.1-0.6-0.2-0.9c-0.1-0.2-0.3-0.4-0.6-0.5
++		c-0.2-0.1-0.5-0.2-0.8-0.2c-0.3,0-0.5-0.1-0.8-0.1h-1.9v3.5h1.7c0.3,0,0.6,0,0.9-0.1s0.6-0.1,0.8-0.3c0.2-0.1,0.5-0.3,0.6-0.6
++		C143.6,12.3,143.7,12,143.7,11.6z M55,37.9v-8.7h1V33h4.9v-3.9h1v8.7h-1v-3.9H56v3.9L55,37.9L55,37.9z M68.1,38
++		c-2.6,0-4.3-2.1-4.3-4.5c0-2.4,1.7-4.5,4.3-4.5c2.6,0,4.3,2.1,4.3,4.5C72.4,35.9,70.6,38,68.1,38z M68.1,37.1
++		c1.9,0,3.3-1.6,3.3-3.6c0-2-1.4-3.6-3.3-3.6c-1.9,0-3.3,1.6-3.3,3.6C64.8,35.5,66.2,37.1,68.1,37.1z M74.4,37.9v-8.7h1l3.1,4.7
++		l3.1-4.7h1v8.7h-1v-7l-3.1,4.7h0l-3.1-4.6v7H74.4L74.4,37.9z M84.8,37.9v-8.7h6.1V30h-5.1v3h4.6v0.9h-4.6v3H91v0.9
++		C91,37.9,84.8,37.9,84.8,37.9z"/>
++	<path fill="#FFFFFF" d="M2.8,14c0.8,4.3,2.3,8.3,4.7,12.1c3,4.7,7.2,8.8,13,12.3c5.8-3.5,10-7.7,13-12.3c2.4-3.8,3.9-7.9,4.7-12.1
++		c0.5-2.7,0.6-4.8,0.7-8c-5.5-2.5-12.2-3.9-18.3-3.9C14.4,2.1,7.6,3.5,2.2,6C2.2,9.2,2.3,11.3,2.8,14L2.8,14z M20.5,0
++		C26.9,0,34.6,1.5,41,4.7c0,7,0.1,24.4-20.5,36.3C-0.1,29.1,0,11.7,0,4.7C6.4,1.5,14.1,0,20.5,0z"/>
++	<path fill-rule="evenodd" clip-rule="evenodd" fill="#FFFFFF" d="M20.2,27L33,11.3c-0.9-0.7-1.8-0.2-2.2,0.2l0,0L20.1,21.6l-4-4.4
++		c-1.9-2-4.5-0.5-5.1-0.1L20.2,27"/>
++</g>
++</svg>
+diff --git a/client/src/install/Setup/index.js b/client/src/install/Setup/index.js
+index c4f66acb..87bac5f5 100644
+--- a/client/src/install/Setup/index.js
++++ b/client/src/install/Setup/index.js
+@@ -23,10 +23,11 @@ import Progress from './Progress';
+ import Toasts from '../../components/Toasts';
+ import Footer from '../../components/ui/Footer';
+ import Icons from '../../components/ui/Icons';
+-import logo from '../../components/ui/svg/logo.svg';
++import logo from '../../components/ui/svg/logo-dark-ui.svg';
+ 
+ import './Setup.css';
+ import '../../components/ui/Tabler.css';
++import '../../components/ui/Tabler-Dark.css';
+ 
+ class Setup extends Component {
+     componentDidMount() {
+diff --git a/client/src/login/Login/index.js b/client/src/login/Login/index.js
+index 3bca509a..6662e820 100644
+--- a/client/src/login/Login/index.js
++++ b/client/src/login/Login/index.js
+@@ -5,14 +5,14 @@ import flow from 'lodash/flow';
+ import { withTranslation, Trans } from 'react-i18next';
+ 
+ import * as actionCreators from '../../actions/login';
+-import logo from '../../components/ui/svg/logo.svg';
++import logo from '../../components/ui/svg/logo-dark-ui.svg';
+ import Toasts from '../../components/Toasts';
+ import Footer from '../../components/ui/Footer';
+ import Icons from '../../components/ui/Icons';
+ import Form from './Form';
+ 
+ import './Login.css';
+-import '../../components/ui/Tabler.css';
++import '../../components/ui/Tabler-Dark.css';
+ 
+ class Login extends Component {
+     state = {

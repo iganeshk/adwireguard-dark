@@ -1,0 +1,27 @@
+diff --git a/scripts/make/version.sh b/scripts/make/version.sh
+index 68e84e9c..e3ac1e17 100644
+--- a/scripts/make/version.sh
++++ b/scripts/make/version.sh
+@@ -75,7 +75,12 @@ case "$channel"
+ in
+ ('development')
+ 	# Use the dummy version for development builds.
+-	version='v0.0.0'
++	version="${VERSION:-1}"
++	if [ "$version" = '' ]
++	then
++		version='v0.0.0'
++	fi
++	readonly version
+ 	;;
+ ('edge')
+ 	# last_minor_zero is the last new minor release.
+@@ -128,7 +133,7 @@ in
+ esac
+ 
+ # Finally, make sure that we don't output invalid versions.
+-if ! echo "$version" | grep -E -e '^v[0-9]+\.[0-9]+\.[0-9]+(-[ab]\.[0-9]+)?(\+[[:xdigit:]]+)?$' -q
++if ! echo "$version" | grep -E -e '^v[0-9]+\.[0-9]+\.[0-9]+(-[ab]\.[0-9]+)?(\-[[:alnum:]]+)?$' -q
+ then
+ 	echo "generated an invalid version '$version'" 1>&2
+ 
