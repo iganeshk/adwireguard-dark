@@ -8,28 +8,26 @@
   <img src="https://raw.githubusercontent.com/iganeshk/adwireguard-dark/assets/screenshot-adwireguard.png?v1" width="800px" alt="AdWireGuard Screenshot" />
 </p>
 
-[AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) and [wg-easy](https://github.com/WeeJeWel/wg-easy) built from sources with dark theme (patches applied on build) into a single docker images and standalone binaries (AdGuardHome) for linux - amd64, arm64 & arm6/7 platforms
+## What?
+Docker container housing both [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome/) and [wg-easy](https://github.com/WeeJeWel/wg-easy) (WireGuard Easy) togther to provide the flexibility of running them at once.
 
-This [image](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark) should allow you to monitor wireguard clients within the AdGuardHome.
+***Note**: On Android, make sure PrivateDNS is disabled to avoid DNS leaking*
 
-*Note: On Android, make sure PrivateDNS is disabled to avoid DNS leaking*
+## What else?
+Bleeding edge distributions for wg-easy patched with security/depenedency updates and adguard home with ~~custom dark theme~~ (temporarily disabled)
 
-## Docker Images & Releases
+### **AdWireGuard**
+  - 🐳 **Docker: [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark) | [DockerHub](https://hub.docker.com/r/iganesh/adwireguard-dark)**
 
-#### AdWireGuard Dark (AdGuardHome + wg-easy)
-* [Docker Hub](https://hub.docker.com/r/iganesh/adwireguard-dark)
-* [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adwireguard-dark)
+### **AdGuardHome (Dark)**
+  - ~~🐳 Docker: [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adguardhome-dark) | [DockerHub](https://hub.docker.com/r/iganesh/adguardhome-dark)~~
+  - ~~⬇️ [Releases](https://github.com/iganeshk/adwireguard-dark/releases)~~
 
-#### AdGuardHome Dark
-* [Docker Hub](https://hub.docker.com/r/iganesh/adguardhome-dark)
-* [ghcr.io](https://github.com/iganeshk/adwireguard-dark/pkgs/container/adguardhome-dark)
-
-#### AdGuardHome Dark Binaries
-
-* [Releases](https://github.com/iganeshk/adwireguard-dark/releases)
+### **wg-easy**
+  - TBA
 
 ### Docker-Compose AdWireGuard:
-```
+```yaml
 version: "3.8"
 
 services:
@@ -52,6 +50,7 @@ services:
       - WG_DEFAULT_ADDRESS=10.10.11.x
       - WG_DEFAULT_DNS=10.10.10.2
       - WG_MTU=1420
+      # - WEBUI_HOST=0.0.0.0 # Change this to allow binding to other than 0.0.0.0 port
     volumes:
         # adguard-home volume
       - './adguard/work:/opt/adwireguard/work'
@@ -77,3 +76,9 @@ networks:
         - subnet: 10.10.10.0/24
 
 ```
+
+
+### wg-easy Patches 
+- Update base image to node18 alpine (holding node20 due to docker build issues for armv6/v7 arch)
+- Updated NodeJS to v18.18.2, bump node dependencies & add ability to adjust WebUI host/port
+- Add [Dark mode](https://github.com/wg-easy/wg-easy/pull/178)
