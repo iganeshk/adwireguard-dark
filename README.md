@@ -50,7 +50,7 @@ services:
       - WG_DEFAULT_ADDRESS=10.10.11.x
       - WG_DEFAULT_DNS=10.10.10.2
       - WG_MTU=1420
-      # - WEBUI_HOST=0.0.0.0 # Change this to allow binding to other than 0.0.0.0 port
+      - WEBUI_HOST=0.0.0.0 # Change this to allow binding to other than 0.0.0.0 port
     volumes:
         # adguard-home volume
       - './adguard/work:/opt/adwireguard/work'
