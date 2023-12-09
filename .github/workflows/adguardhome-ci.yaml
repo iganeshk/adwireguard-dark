@@ -56,6 +56,7 @@ jobs:
           echo "release_tag=${latest_version}" >> $GITHUB_ENV
           echo "release_name=${latest_version}-dark" >> $GITHUB_ENV
           echo "build_date=$( date -u +'%Y-%m-%dT%H:%M:%SZ' )" >> $GITHUB_ENV
+          echo "ci_build_date=$(date -d "$build_date" +"%Y%m%d_%H%M%S")"
           echo "adguard_dist_path=${{ env.ADGUARDHOME_DIST_PATH }}/docker" >> $GITHUB_ENV
 
       # - name: 'Fetch and Apply Dark Theme Patch'
@@ -109,7 +110,7 @@ jobs:
       - name: Upload AGH artifacts
         uses: actions/upload-artifact@v3.1.3
         with:
-          name: ${{ env.release_name }}-${{ env.build_date }}
+          name: ${{ env.release_name }}-${{ env.ci_build_date }}
           path: ${{ env.ADGUARDHOME_DIST_PATH }}/**/*
           retention-days: 60
 
